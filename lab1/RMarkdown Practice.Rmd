@@ -1,0 +1,36 @@
+---
+title: "RMarkdown Practice"
+author: "Laurine Cabiling"
+date: "2023-01-10"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## The RMarkdown Practice 
+Hello, this is my practice sheet. 
+
+# This is a smaller font 
+This is a normal font. While this _font_ is in italics. While this **font** is in bold. 
+
+
+There was a line break prior to this sentence. 
+
+[BIS015LW2023lcabiling](https://github.com/Lcabiling/BIS15W2023_lcabiling)
+[Laurine Cabiling](malito:lcabiling@ucdavis.edu)
+
+```{r}
+install.packages(devtools)
+```
+
+```{r}
+install.packages("tidyverse")
+library("tidyverse")
+```
+
+
+
+
+
