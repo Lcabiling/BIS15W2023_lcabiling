@@ -80,6 +80,5 @@ Med_Temp_Emerald_Spring <- median(all_spring_scientst_matrix[6,])
 Med_Temp_Emerald_Spring
 ```
 
-
 ## Push your final code to GitHub!
 Please be sure that you check the `keep md` file in the knit preferences.  
