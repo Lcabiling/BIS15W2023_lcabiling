@@ -177,4 +177,4 @@ Med_Temp_Emerald_Spring
 ```
 
 ## Push your final code to GitHub!
-Please be sure that you check the `keep md` file in the knit preferences.  
+Please be sure that you check the `keep md` file in the knit preferences. .
