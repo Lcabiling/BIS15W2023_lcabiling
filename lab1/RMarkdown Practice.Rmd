@@ -22,11 +22,11 @@ There was a line break prior to this sentence.
 [Laurine Cabiling](malito:lcabiling@ucdavis.edu)
 
 ```{r}
-install.packages(devtools)
+#install.packages("devtools")
 ```
 
 ```{r}
-install.packages("tidyverse")
+#install.packages("tidyverse")
 library("tidyverse")
 ```
 
