@@ -1,0 +1,67 @@
+---
+title: "Lab 3 Warm Up"
+output: 
+  html_document: 
+    keep_md: yes
+date: "2023-01-17"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### 1.Plant Height Vector 
+```{r}
+Plant_height <- c(30.7, 37.6, 28.4, NA, 33.2)
+```
+
+### 2. Plant Weight Vector
+```{r}
+Plant_mass <- c(4, 5.2, 3.7, NA, 4.6)
+```
+
+### 3. Labels for data matrix
+```{r}
+samples <- c("Plant1", "Plant2", "Plant3", "Plant4", "Plant5")
+measured <- c("height", "weight")
+```
+
+### 4. Combine data for height and weight
+```{r}
+plants_experiment <- c(Plant_height, Plant_mass)
+plants_experiment
+```
+
+### 5. Build he data matrix
+```{r}
+plants_experiment_matrix <- matrix(plants_experiment, nrow = 5, byrow = F)
+plants_experiment_matrix 
+```
+
+### 6. Name the columns and Rows 
+```{r}
+colnames(plants_experiment_matrix)<- measured 
+rownames(plants_experiment_matrix)<- samples
+```
+
+### 7. Print the matrix
+```{r}
+plants_experiment_matrix
+```
+
+###8. Calculate column means 
+```{r}
+plant_means <- colMeans(plants_experiment_matrix, na.rm = T)
+plant_means
+```
+
+### 9. Add this column to the matrix
+```{r}
+plants_experiment_matrix_final <- rbind(plants_experiment_matrix, plant_means)
+```
+
+### 10. Print the final matrix
+```{r}
+plants_experiment_matrix_final
+```
+
