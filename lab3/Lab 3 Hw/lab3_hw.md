@@ -2,9 +2,8 @@
 title: "Lab 3 Homework"
 author: "Laurine Cabiling"
 date: "2023-01-18"
-output:
+output: 
   html_document: 
-    theme: spacelab
     keep_md: yes
 ---
 

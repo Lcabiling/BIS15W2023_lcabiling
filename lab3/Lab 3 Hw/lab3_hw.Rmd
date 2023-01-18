@@ -2,9 +2,8 @@
 title: "Lab 3 Homework"
 author: "Laurine Cabiling"
 date: "`r Sys.Date()`"
-output:
+output: 
   html_document: 
-    theme: spacelab
     keep_md: yes
 ---
 
