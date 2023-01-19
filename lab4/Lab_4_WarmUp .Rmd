@@ -1,0 +1,41 @@
+---
+title: "Lab_4_Warmup"
+output: html_document
+date: "2023-01-19"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### 1. Load Tidyverse 
+Call the tidyverse but DO NOT reinstall the package unless R is updated then we need to reinstall every time. 
+  Go to tools, check package updates, if so, update it. 
+```{r}
+library(tidyverse)
+library(palmerpenguins)
+```
+
+### 2. Dimensions of penguins dataset
+```{r}
+dim(penguins)
+```
+
+
+### 3. Variable names in penguins dataset
+```{r}
+names(penguins)
+```
+
+### 4. Number of individuals in penguins dataset
+The $ specifies the column ; categorical class is best for tables ; 344 individuals
+```{r}
+table(penguins$island)
+table(penguins$species)
+```
+
+### 5. Mean body mass for all idividuals 
+```{r}
+mean(penguins$body_mass_g, na.rm = T)
+```
+

@@ -1,0 +1,43 @@
+---
+title: "List_of_commands"
+author: "Laurine Cabiling"
+date: "2023-01-19"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Lab 1 
+
+## Lab 2
+
+## Lab 3 
+
+## Lab 4 
+
+# dplyr
+The first package that we will use that is part of the tidyverse is `dplyr`. `dplyr` is used to transform data frames by extracting, rearranging, and summarizing data such that they are focused on a question of interest. This is very helpful,  especially when wrangling large data, and makes dplyr one of most frequently used packages in the tidyverse. The two functions we will use most are `select()` and `filter()`.
+
+#`select()`
+```{r}
+#select(dataset, "variable")
+#to get a table with that specific variable - make sure to "" as its a variable and not a character 
+```
+Select allows you to pull out columns of interest from a dataframe. To do this, just add the names of the columns to the `select()` command. The order in which you add them, will determine the order in which they appear in the output.
+
+To add a range of columns use `start_col:end_col`.
+
+The - operator is useful in select. It allows us to select everything except the specified variables.
+
+For very large data frames with lots of variables, `select()` utilizes lots of different operators to make things easier. Let's say we are only interested in the variables that deal with length.
+When columns are sequentially named, `starts_with()` makes selecting columns easier.
+
+Options to select columns based on a specific criteria include:  
+1. ends_with() = Select columns that end with a character string  
+2. contains() = Select columns that contain a character string  
+3. matches() = Select columns that match a regular expression  
+4. one_of() = Select columns names that are from a group of names 
+
+Filter is in rows 
