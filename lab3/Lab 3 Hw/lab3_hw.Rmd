@@ -38,9 +38,8 @@ There are 83 observations, meaning there was 83 different types of mammals or ro
 
 4. Are there any NAs in the data? How did you determine this? Please show your code.  
 ```{r}
-my_missing <- NA
-is.na(my_missing)
-anyNA(my_missing)
+is.na(sleep)
+anyNA(sleep)
 ```
 There are NAs in the data set.
 
