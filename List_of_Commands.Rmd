@@ -1,0 +1,456 @@
+---
+title: "List_of_Commands"
+author: "Laurine Cabiling"
+date: "2023-01-23"
+output: 
+  html_document: 
+    keep_md: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#Intro
+This is a list of commands from lecture, excluding commands we may have used independtly from homework assignments. Not all the codes are runable because there is no connected files.
+
+# Lab 1 commands
+```{r}
+#get working directory
+#getwd()
+#set working directory 
+#setwd()
+```
+
+```{r}
+#making a vector or string of values into an object 
+# c means concatenate
+x <- c(3,43,7,8,534)
+```
+
+```{r}
+#mean of object
+mean(x)
+```
+
+```{r}
+#median of object
+median(x)
+```
+
+## "#" = titles 
+## = reduced font size, the more # = reduced size
+smallest font size 
+_italics_
+**bold**
+line break = two places 
+
+## Links 
+[website name]
+(website link)
+(mailto: email address)
+
+```{r}
+#input code chunk with mac is ...
+#`option+command+i`
+```
+
+```{r}
+#install.packages("name of package")
+#library("name of package") to download data every session
+```
+
+```{r}
+#ggplot(data, subset(x = factor(cyl))) + geom_bar()
+#to create a plot graph?
+```
+
+#Lab 2 commands
+
+```{r}
+#assigning values to an object 
+x <- 34
+s <- 44
+```
+
+```{r}
+#printing object 
+x
+```
+
+```{r}
+#suming objects 
+distance <- sum(x,s)
+```
+
+## Types of Data
+```{r}
+#Five frequently used classes of data: 
+  # 1. numeric
+  # 2. integer - adding an L automatically denotes an integer
+  # 3. character
+  # 4. logical
+  # 5. complex
+my_numeric <- 43
+my_integer <- 2L 
+my_character <- "universe"
+my_logical <- FALSE
+my_complex <- 2+4i
+```
+
+```{r}
+#find class of function
+class(my_numeric)
+```
+
+```{r}
+# is my numeric an integer? 
+is.integer(my_numeric)
+```
+
+```{r}
+# create a new object specified as a different class
+my_integer <- as.integer(my_numeric)
+```
+
+```{r}
+# is there NA in my data - says which data is T/F
+is.na(x)
+```
+
+```{r}
+# are there any NAs in my data - T/F
+anyNA(x)
+```
+
+```{r}
+#to remove any NAs when calculating
+# na.rm = T
+mean(x, na.rm = T)
+```
+
+data structures include...
+  vectors
+  lists
+  matrices
+  data frames
+  factors
+  
+```{r}
+#numeric vector
+my_vector <- c(20,34,23)
+```
+
+```{r}
+#character vector
+days_of_the_week <- c("sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday")
+```
+
+```{r}
+# generate a sequence of numbers
+my_vector_sequence <- c(1:100)
+```
+
+```{r}
+# use [] to pull out elements in a vector
+days_of_the_week[3]
+```
+
+```{r}
+# pull out data greater than ...
+my_vector_sequence > 80
+
+# pull out data greater than or equal to ...
+my_vector_sequence >= 49
+
+# pull out data less than ...
+my_vector_sequence < 30
+
+# pull out data less than or equal to...
+my_vector_sequence <= 43
+
+# pull out data equal to ...
+my_vector_sequence == 39
+
+# Use [] to get the values, not the logical evaluation
+my_vector_sequence[my_vector_sequence <= 20]
+```
+
+## How to do Data Matrices 
+
+```{r}
+Philosophers_Stone <- c(317.5, 657.1)
+Chamber_of_Secrets <- c(261.9, 616.9)
+Prisoner_of_Azkaban <- c(249.5, 547.1)
+Goblet_of_Fire <- c(290.0, 606.8)
+Order_of_the_Phoenix <- c(292.0, 647.8)
+Half_Blood_Prince <- c(301.9, 632.4)
+Deathly_Hallows_1 <- c(295.9, 664.3)
+Deathly_Hallows_2 <- c(381.0, 960.5)
+```
+
+```{r}
+#combine all objects into one
+box_office <- c(Philosophers_Stone, Chamber_of_Secrets, Prisoner_of_Azkaban, Goblet_of_Fire, Order_of_the_Phoenix, Half_Blood_Prince, Deathly_Hallows_1, Deathly_Hallows_2)
+```
+
+```{r}
+#create the matrix, and organize using `nrow` and `byrow`
+harry_potter_matrix <- matrix(box_office, nrow = 8, byrow = T)
+```
+
+```{r}
+#name the vectors for the rows and columns 
+region <- c("US", "non-US")
+titles <- c("Philosophers_Stone", "Chamber_of_Secrets", "Prisoner_of_Azkaban", "Goblet_of_Fire", "Order_of_the_Phoenix", "Half_Blood_Prince", "Deathly_Hallows_1", "Deathly_Hallows_2")
+```
+
+```{r}
+#name the columns
+colnames(harry_potter_matrix) <- region
+#name the rows
+rownames(harry_potter_matrix) <- titles
+```
+
+```{r}
+# print the matrix
+harry_potter_matrix
+```
+
+```{r}
+#sum the rows 
+global <- rowSums(harry_potter_matrix)
+```
+
+```{r}
+#add new column to show calculation
+all_harry_potter_matrix <- cbind(harry_potter_matrix, global)
+```
+
+```{r}
+#sum the columns
+final_earnings <- colSums(all_harry_potter_matrix)
+```
+
+```{r}
+# pull out data, the first value is the column, then the row
+harry_potter_matrix[2,1]
+# pull out data, `:` selects specified elements in a column
+harry_potter_matrix[1:4]
+```
+
+```{r}
+#calculate an entire row or column
+non_us_earnings <- all_harry_potter_matrix[ ,2]
+mean(non_us_earnings)
+```
+
+# Lab 3 commands 
+Building data frames
+
+```{r}
+Sex <- c("Male", "Female", "Male")
+Length <- c(3.2, 3.7, 3.4)
+Weight <- c(2.9, 4.0, 3.1)
+```
+
+```{r}
+#get the data frame
+hbirds <- data.frame(Sex, Length, Weight)
+```
+
+```{r}
+# column names
+names(hbirds)
+```
+
+```{r}
+# dimensions of data frame
+dim(hbirds)
+```
+
+```{r}
+# structure of data frame
+str(hbirds)
+```
+
+```{r}
+# switching to lowercase
+hbirds <- data.frame(sex = Sex, length_in = Length, weight_oz = Weight)
+```
+
+```{r}
+#Select values in an entire column using `$` sign. 
+w <- hbirds$weight_oz
+```
+
+```{r}
+#add new data using `rbind()`, bind new vector to data frame row-wise
+new_bird <- c("Female", 3.6, 3.9)
+hbirds <- rbind(hbirds, new_bird)
+```
+
+```{r}
+# adding columns
+hbirds$neighborhood <- c("Lakewood", "Brentwood", "Lakewood", "Scenic Heights")
+```
+
+```{r}
+#Saving our dataframe as a csv
+write.csv(hbirds, "hbirds_data.csv", row.names = FALSE)
+```
+
+```{r}
+#Opening a .csv file & give it a name
+hbirds <- readr::read_csv("hbirds_data.csv")
+```
+
+```{r}
+#Looking at the data frame in different ways
+
+#structure
+#str()
+
+#a type of summary
+#glimpse()
+
+#a type of summary
+#summary()
+
+#number of rows or observations
+#nrow()
+
+#number of columns or variables 
+#ncol()
+
+#dimensions
+#dim()
+
+#names of column
+#name()
+
+#prints the first n rows of the data frame
+#head(data, n = )
+
+#prints the last n rows of the data frame
+#tail(data, n = )
+
+#table - useful when limited number of categorical variables
+#table(data$variable)
+
+#See the data frame in the separate tab
+#View()
+```
+
+```{r}
+#Looking at a class within the data frame
+class(hbirds$neighborhood)
+#looking at the level within the data frame
+levels(hbirds$neightborhood)
+#changing the class of data
+hbirds$neighborhood <- as.factor(hbirds$neighborhood)
+```
+
+```{r}
+#subsets are to pull out observations that meet a critera in a variable
+# little_fish <- subset(fish, length <= 110)
+```
+
+##Lab 4 commands
+
+```{r}
+#select is to filter but with columns instead of rows
+#select(fish, "lakeid", "scalelength")
+```
+
+```{r}
+#to add range of columns
+#select(fish, fish_id:length)
+```
+
+```{r}
+# use - operator to select everything except these variables
+#select(fish, -fish_id, -annumber, -length)
+```
+
+```{r}
+#select columns that contain a character string
+#select(fish, contains("length"))
+
+#select columns that start with this name
+#select(fish, starts_with("radii"))
+
+#select columns that end with a charater string
+#select(fish, ends_with())
+
+#select columns that match a regular expression
+#select(fish, matches())
+
+#select column names that are from a group of names
+#select(fish, one_of())
+
+#a column contains a letter (in this case "a") followed by a subsequent string (in this case "er").  
+#select(fish,matches("a.+er"))
+
+#select column based on class of data
+#select_if(fish, is.numeric)
+
+#select all columns that are NOT a class of data, add `~`
+#select_if(fish,~is.numeric(.))
+```
+
+```{r}
+#renaming columns
+#mammals_new <- rename(mammals, genus = "Genus",wean_mass = "wean mass", max_life = "max. life", litter_size = "litter size", litters_per_year = "litters/year")
+
+#to lower case all of the columns
+#mammals <- select_all(mammals, tolower)
+
+#to upper case all of the columns
+#mammals <- select_all(mammals, toupper)
+
+#to remove the blank spaces
+#select_all(mammals, ~str_replace(., " ","_"))
+#select_all(mammals, ~str_replace(., "[ ._/]", "" ))
+```
+
+```{r}
+# filter extracts data that meets specific criteria within a variable
+#filter(fish, lakeid == "AL")
+
+# filter allows to use the expected operators to filter through data ;
+  # >, >=, <, <=, != (not equal), and == (equal)
+
+# filter multiple values within same variable
+#filter(fish, length %in% c(167,175))
+
+#between
+#filter(fish, between(scalelength, 2.5, 3))
+
+#extract observations "near" a certain value, and specify a tolerance
+#filter(fish, near(radii_length_mm, 2, tol = 0.2))
+
+#filter to extract data based on multiple conditions
+#filter(fish, lakeid == "AL", length == 350)
+
+# `|` operator means or 
+#filter(fish, lakeid == "AL" | lenght > 350)
+
+#will return rows where both conditions are met
+#filter(condition1, condition2)
+
+# will return all rows where condition one is true but condition 2 is not.  
+#filter(condition1, !condition2)
+
+# will return rows where condition 1 and/or condition 2 is met.  
+#filter(condition1 | condition2)
+  
+# will return all rows where only one of the conditions is met, and not when both conditions are met. 
+#filter(xor(condition1, condition2))
+```
+
+
+
+
+
+
