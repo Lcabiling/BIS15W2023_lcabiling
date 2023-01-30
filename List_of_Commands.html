@@ -713,6 +713,169 @@ hbirds$neighborhood &lt;- as.factor(hbirds$neighborhood)</code></pre>
   
 # will return all rows where only one of the conditions is met, and not when both conditions are met. 
 #filter(xor(condition1, condition2))</code></pre>
+<p>##Lab 5</p>
+<p>How to change classes efficiently when wanting to change all of one
+class into another class</p>
+<pre class="r"><code>#mammals %&gt;% mutate_if(is.character, as.factor)</code></pre>
+<p>In order to start combining <code>select()</code>,
+<code>filter()</code>, and other functions efficiently, we need to learn
+pipes. Pipes feed the output from one function into the input of another
+function. This helps us keep our code sequential and clean.<br />
+### shift+Cmd+M to get pipe — can combine column and row</p>
+<pre class="r"><code>#fish_subset &lt;- fish %&gt;% 
+  #filter(lakeid == &quot;AL&quot; | lakeid == &quot;AR&quot;) %&gt;% 
+  #filter(radii_length_mm &gt;= 2, radii_length_mm &lt;= 4)</code></pre>
+<p>The <code>arrange()</code> command is a bit like a sort command in
+excel. Note that the default is ascending order.<br />
+To sort in decreasing order, wrap the variable name in
+<code>desc()</code>.</p>
+<pre class="r"><code>#fish %&gt;% 
+  #select(lakeid, scalelength) %&gt;% 
+  #arrange(scalelength)</code></pre>
+<div id="mutate" class="section level2">
+<h2><code>mutate()</code></h2>
+<p>Mutate allows us to create a new column from existing columns in a
+data frame. We are doing a small introduction here and will add some
+additional functions later. Let’s convert the length variable from cm to
+millimeters and create a new variable called length_mm.</p>
+<div id="can-do-calculations-and-add-it-as-a-new-column" class="section level3">
+<h3>can do calculations and add it as a new column</h3>
+<pre class="r"><code>#fish %&gt;% 
+ # mutate(length_mm = length*10) %&gt;% 
+ # select(fish_id, length, length_mm)</code></pre>
+</div>
+</div>
+<div id="mutate_all" class="section level2">
+<h2><code>mutate_all()</code></h2>
+<p>This last function is super helpful when cleaning data. With “wild”
+data, there are often mixed entries (upper and lowercase), blank spaces,
+odd characters, etc. These all need to be dealt with before
+analysis.</p>
+<pre class="r"><code>#mammals %&gt;%
+ # mutate_all(tolower)
+
+#mammals %&gt;% 
+  #mutate(across(c(&quot;order&quot;, &quot;family&quot;), tolower))</code></pre>
+</div>
+<div id="if_else" class="section level2">
+<h2><code>if_else()</code></h2>
+<p>We will briefly introduce <code>if_else()</code> here because it
+allows us to use <code>mutate()</code> but not have the entire column
+affected in the same way. In a sense, this can function like find and
+replace in a spreadsheet program. With <code>ifelse()</code>, you first
+specify a logical statement, afterwards what needs to happen if the
+statement returns <code>TRUE</code>, and lastly what needs to happen if
+it’s <code>FALSE</code>.</p>
+<p>mutating or changing all of the -999.00 into NA</p>
+<pre class="r"><code>#mammals %&gt;% 
+  #select(genus, species, newborn) %&gt;%
+  #mutate(newborn_new = ifelse(newborn == -999.00, NA, newborn))%&gt;% 
+  #arrange(newborn)</code></pre>
+<p>Check out the way I am loading these data. If I know there are NAs, I
+can take care of them at the beginning. But, we should do this very
+cautiously. At times it is better to keep the original columns and data
+intact.</p>
+<pre class="r"><code>#superhero_info &lt;- readr::read_csv(&quot;data/heroes_information.csv&quot;, na = c(&quot;&quot;, &quot;-99&quot;, &quot;-&quot;))
+#superhero_powers &lt;- readr::read_csv(&quot;data/super_hero_powers.csv&quot;, na = c(&quot;&quot;, &quot;-99&quot;, &quot;-&quot;))</code></pre>
+<p>The <code>clean_names</code> function takes care of everything in one
+line! Now that’s a superpower!</p>
+<pre class="r"><code>#superhero_powers &lt;- janitor::clean_names(superhero_powers)
+
+#superhero_info &lt;-
+ #janitor::clean_names(superhero_info)</code></pre>
+</div>
+<div id="tabyl" class="section level2">
+<h2><code>tabyl</code></h2>
+<p>The <code>janitor</code> package has many awesome functions that we
+will explore. Here is its version of <code>table</code> which not only
+produces counts but also percentages. Very handy! Let’s use it to
+explore the proportion of good guys and bad guys in the
+<code>superhero_info</code> data.</p>
+<pre class="r"><code>#tabyl(superhero_info, alignment)</code></pre>
+<pre class="r"><code>#superhero_powers %&gt;% 
+ # filter(hero_names == &quot;Loki&quot;) %&gt;% 
+ # select_if(all_vars(.==&quot;TRUE&quot;))</code></pre>
+</div>
+<div id="dplyr-practice" class="section level2">
+<h2>dplyr Practice</h2>
+<p>Let’s do a bit more practice to make sure that we understand
+<code>select()</code>, <code>filter()</code>, and <code>mutate()</code>.
+Start by building a new data frame <code>msleep24</code> from the
+<code>msleep</code> data that: contains the <code>name</code> and
+<code>vore</code> variables along with a new column called
+<code>sleep_total_24</code> which is the amount of time a species sleeps
+expressed as a proportion of a 24-hour day. Remove any rows with NA’s
+and restrict the <code>sleep_total_24</code> values to less than 0.3.
+Arrange the output in descending order.</p>
+<pre class="r"><code>#msleep24 &lt;- msleep %&gt;% 
+ # mutate(sleep_total_24 = sleep_total/24) %&gt;% 
+ # select(name, vore, sleep_total_24) %&gt;% 
+ # filter(!is.na(vore)) %&gt;%  #removing NAs from a variable 
+ # filter(sleep_total_24 &lt;= 0.3) %&gt;% 
+ # arrange(desc(sleep_total_24))</code></pre>
+<p>Histogram</p>
+<pre class="r"><code>#hist()</code></pre>
+</div>
+<div id="group_by" class="section level2">
+<h2><code>group_by()</code></h2>
+<p>The <code>summarize()</code> function is most useful when used in
+conjunction with <code>group_by()</code>. Although producing a summary
+of body weight for all of the mammals in the data set is helpful, what
+if we were interested in body weight by feeding ecology?</p>
+<pre class="r"><code>#msleep %&gt;%
+#  group_by(vore) %&gt;% #we are grouping by feeding ecology, a categorical variable
+#  summarize(min_bodywt = min(bodywt),
+#            max_bodywt = max(bodywt),
+#            mean_bodywt = mean(bodywt),
+#            total=n())</code></pre>
+</div>
+<div id="counts" class="section level2">
+<h2>Counts</h2>
+<p>Although these summary functions are super helpful, oftentimes we are
+mostly interested in counts. The <a href="https://garthtarr.github.io/meatR/janitor.html">janitor
+package</a> does a lot with counts, but there are also functions that
+are part of dplyr that are useful.</p>
+<p><code>count()</code> is an easy way of determining how many
+observations you have within a column. It acts like a combination of
+<code>group_by()</code> and <code>n()</code>.</p>
+<pre class="r"><code>#penguins %&gt;% 
+#  count(island, sort = T) #sort=T sorts the column in descending order</code></pre>
+<p>You can also use <code>count()</code> across multiple variables.</p>
+<pre class="r"><code>#penguins %&gt;% 
+#  count(island, species, sort = T) # sort=T will arrange in descending order</code></pre>
+<p>You can also use <code>count()</code> to find NAs in data</p>
+<pre class="r"><code>#penguins %&gt;% 
+#  count(sex, island)</code></pre>
+</div>
+<div id="across" class="section level2">
+<h2><code>across()</code></h2>
+<p>What about using <code>filter()</code> and <code>select()</code>
+across multiple variables? There is a function in dplyr called
+<code>across()</code> which is designed to work across multiple
+variables.</p>
+<p>By using <code>across()</code> we can reduce the clutter and make
+things cleaner.</p>
+<pre class="r"><code>#penguins %&gt;%
+#  summarize(across(c(species, island, sex), n_distinct))</code></pre>
+<p>This is very helpful for continuous variables.</p>
+<pre class="r"><code>#penguins %&gt;%
+#  summarize(across(contains(&quot;mm&quot;), mean, na.rm=T))</code></pre>
+<p><code>group_by</code> also works.</p>
+<pre class="r"><code>#penguins %&gt;%
+#  group_by(sex) %&gt;% 
+#  summarize(across(contains(&quot;mm&quot;), mean, na.rm=T))</code></pre>
+<p>Here we summarize across all variables.</p>
+<pre class="r"><code>#penguins %&gt;%
+#  summarise_all(mean, na.rm=T)</code></pre>
+<p>the !c(…) says across all variables except …</p>
+<pre class="r"><code>#penguins %&gt;%
+#  summarise(across(!c(species, island, sex, year), 
+#                   mean, na.rm=T))</code></pre>
+<p>All variables that include “bill”…all of the other dplyr operators
+also work.</p>
+<pre class="r"><code>#penguins %&gt;%
+#  summarise(across(starts_with(&quot;bill&quot;), mean, na.rm=T))</code></pre>
+</div>
 </div>
 
 

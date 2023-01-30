@@ -682,7 +682,194 @@ hbirds$neighborhood <- as.factor(hbirds$neighborhood)
 ```
 
 
+##Lab 5
+
+How to change classes efficiently when wanting to change all of one class into another class 
+
+```r
+#mammals %>% mutate_if(is.character, as.factor)
+```
+
+In order to start combining `select()`, `filter()`, and other functions efficiently, we need to learn pipes. Pipes feed the output from one function into the input of another function. This helps us keep our code sequential and clean.  
+### shift+Cmd+M to get pipe --- can combine column and row 
+
+```r
+#fish_subset <- fish %>% 
+  #filter(lakeid == "AL" | lakeid == "AR") %>% 
+  #filter(radii_length_mm >= 2, radii_length_mm <= 4)
+```
+
+The `arrange()` command is a bit like a sort command in excel. Note that the default is ascending order.  
+To sort in decreasing order, wrap the variable name in `desc()`.
+
+```r
+#fish %>% 
+  #select(lakeid, scalelength) %>% 
+  #arrange(scalelength)
+```
+
+## `mutate()`  
+Mutate allows us to create a new column from existing columns in a data frame. We are doing a small introduction here and will add some additional functions later. Let's convert the length variable from cm to millimeters and create a new variable called length_mm.  
+
+### can do calculations and add it as a new column 
+
+```r
+#fish %>% 
+ # mutate(length_mm = length*10) %>% 
+ # select(fish_id, length, length_mm)
+```
+
+## `mutate_all()`
+This last function is super helpful when cleaning data. With "wild" data, there are often mixed entries (upper and lowercase), blank spaces, odd characters, etc. These all need to be dealt with before analysis. 
+
+```r
+#mammals %>%
+ # mutate_all(tolower)
+
+#mammals %>% 
+  #mutate(across(c("order", "family"), tolower))
+```
+
+## `if_else()`
+We will briefly introduce `if_else()` here because it allows us to use `mutate()` but not have the entire column affected in the same way. In a sense, this can function like find and replace in a spreadsheet program. With `ifelse()`, you first specify a logical statement, afterwards what needs to happen if the statement returns `TRUE`, and lastly what needs to happen if it's  `FALSE`.  
+
+mutating or changing all of the -999.00 into NA
+
+```r
+#mammals %>% 
+  #select(genus, species, newborn) %>%
+  #mutate(newborn_new = ifelse(newborn == -999.00, NA, newborn))%>% 
+  #arrange(newborn)
+```
+
+Check out the way I am loading these data. If I know there are NAs, I can take care of them at the beginning. But, we should do this very cautiously. At times it is better to keep the original columns and data intact.  
+
+```r
+#superhero_info <- readr::read_csv("data/heroes_information.csv", na = c("", "-99", "-"))
+#superhero_powers <- readr::read_csv("data/super_hero_powers.csv", na = c("", "-99", "-"))
+```
+
+The `clean_names` function takes care of everything in one line! Now that's a superpower!
+
+```r
+#superhero_powers <- janitor::clean_names(superhero_powers)
+
+#superhero_info <-
+ #janitor::clean_names(superhero_info)
+```
+
+## `tabyl`
+The `janitor` package has many awesome functions that we will explore. Here is its version of `table` which not only produces counts but also percentages. Very handy! Let's use it to explore the proportion of good guys and bad guys in the `superhero_info` data.  
 
 
+```r
+#tabyl(superhero_info, alignment)
+```
 
 
+```r
+#superhero_powers %>% 
+ # filter(hero_names == "Loki") %>% 
+ # select_if(all_vars(.=="TRUE"))
+```
+
+## dplyr Practice
+Let's do a bit more practice to make sure that we understand `select()`, `filter()`, and `mutate()`. Start by building a new data frame `msleep24` from the `msleep` data that: contains the `name` and `vore` variables along with a new column called `sleep_total_24` which is the amount of time a species sleeps expressed as a proportion of a 24-hour day. Remove any rows with NA's and restrict the `sleep_total_24` values to less than 0.3. Arrange the output in descending order.  
+
+```r
+#msleep24 <- msleep %>% 
+ # mutate(sleep_total_24 = sleep_total/24) %>% 
+ # select(name, vore, sleep_total_24) %>% 
+ # filter(!is.na(vore)) %>%  #removing NAs from a variable 
+ # filter(sleep_total_24 <= 0.3) %>% 
+ # arrange(desc(sleep_total_24))
+```
+
+Histogram
+
+```r
+#hist()
+```
+
+## `group_by()`
+The `summarize()` function is most useful when used in conjunction with `group_by()`. Although producing a summary of body weight for all of the mammals in the data set is helpful, what if we were interested in body weight by feeding ecology?
+
+```r
+#msleep %>%
+#  group_by(vore) %>% #we are grouping by feeding ecology, a categorical variable
+#  summarize(min_bodywt = min(bodywt),
+#            max_bodywt = max(bodywt),
+#            mean_bodywt = mean(bodywt),
+#            total=n())
+```
+
+## Counts
+Although these summary functions are super helpful, oftentimes we are mostly interested in counts. The [janitor package](https://garthtarr.github.io/meatR/janitor.html) does a lot with counts, but there are also functions that are part of dplyr that are useful.  
+
+`count()` is an easy way of determining how many observations you have within a column. It acts like a combination of `group_by()` and `n()`.
+
+```r
+#penguins %>% 
+#  count(island, sort = T) #sort=T sorts the column in descending order
+```
+
+You can also use `count()` across multiple variables.
+
+```r
+#penguins %>% 
+#  count(island, species, sort = T) # sort=T will arrange in descending order
+```
+
+You can also use `count()` to find NAs in data 
+
+```r
+#penguins %>% 
+#  count(sex, island)
+```
+
+## `across()`
+What about using `filter()` and `select()` across multiple variables? There is a function in dplyr called `across()` which is designed to work across multiple variables.
+
+By using `across()` we can reduce the clutter and make things cleaner. 
+
+```r
+#penguins %>%
+#  summarize(across(c(species, island, sex), n_distinct))
+```
+
+This is very helpful for continuous variables.
+
+```r
+#penguins %>%
+#  summarize(across(contains("mm"), mean, na.rm=T))
+```
+
+`group_by` also works.
+
+```r
+#penguins %>%
+#  group_by(sex) %>% 
+#  summarize(across(contains("mm"), mean, na.rm=T))
+```
+
+Here we summarize across all variables.
+
+```r
+#penguins %>%
+#  summarise_all(mean, na.rm=T)
+```
+
+the !c(...) says across all variables except ...
+
+```r
+#penguins %>%
+#  summarise(across(!c(species, island, sex, year), 
+#                   mean, na.rm=T))
+```
+
+All variables that include "bill"...all of the other dplyr operators also work.
+
+```r
+#penguins %>%
+#  summarise(across(starts_with("bill"), mean, na.rm=T))
+```
