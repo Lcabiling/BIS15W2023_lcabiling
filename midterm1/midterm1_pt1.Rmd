@@ -101,8 +101,11 @@ names(ducks)
 
 ```{r}
 ducks %>% 
-  summmarize(mean_body_mass_migr_strat = mean())
+  group_by(migratory_strategy) %>% 
+  summarise(mean(log10_mass),
+            total=n())
 ```
+Birds have a greater mass, the shorter the migratory distance. Furthermore, long distance migratory birds seem to be the lightest on average; however, we have to be cautious as the average may be slightly biased as there were only two individuals who are long distance migratory birds. 
 
 Problem 9. (2 points) Accipitridae is the family that includes eagles, hawks, kites, and osprey. First, make a new object `eagles` that only includes species in the family Accipitridae. Next, restrict these data to only include the variables common_name, scientific_name, and population_size.
 ```{r}
@@ -117,27 +120,30 @@ Problem 10. (4 points) In the eagles data, any species with a population size le
 eagles_new <- eagles %>% 
   mutate(conservation_status = population_size<250000) %>% 
   select(common_name,scientific_name,population_size,conservation_status)
+eagles_new
 ```
 
 Problem 11. (2 points) Consider the results from questions 9 and 10. Are there any species for which their threatened status needs further study? How do you know?
+
 ```{r}
 eagles_new %>% 
-  tabyl(conservation_status)
+  filter(is.na(conservation_status))
 ```
 Yes, we would want to look more into the species that are described as NA because that shows we do not have enough data on that select species, so we do not know if the need more protection. 
 
 Problem 12. (4 points) Use the `ecosphere` data to perform one exploratory analysis of your choice. The analysis must have a minimum of three lines and two functions. You must also clearly state the question you are attempting to answer.
 
-Which habitat do most of the birds live in, what is the average size of the birds in each habitat
 ```{r}
 ecosphere %>% 
-  group_by(habitat) %>% 
-  summarise(across(c(log10_mass), na.rm = T)
+  filter(family == "Alcidae") %>% 
+  arrange(log10_mass) %>% 
+  select(common_name, log10_mass, population_size, mean_eggs_per_clutch)
 ```
+What birds are in the Alcidae family, what are their sizes, and what can the lack of data of population size and average eggs per clutch possibly mean in terms of conservation efforts. Furthermore, is there a correlation between body mass and eggs per clutch? 
 
 Please provide the names of the students you have worked with with during the exam:
 ```{r}
-
+#Tatiana Aguilar 
 ```
 
 Please be 100% sure your exam is saved, knitted, and pushed to your github repository. No need to submit a link on canvas, we will find your exam in your repository.
