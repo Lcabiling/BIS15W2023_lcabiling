@@ -55,6 +55,8 @@ Problem 4. (2 points) Which habitat has the highest diversity (number of species
 ecosphere %>% 
   group_by(habitat) %>% 
   summarize(total=n())
+
+#professor used = `ecosphere %>% count(habitat) %>% arrange(-n)`
 ```
 
 Run the code below to learn about the `slice` function. Look specifically at the examples (at the bottom) for `slice_max()` and `slice_min()`. If you are still unsure, try looking up examples online (https://rpubs.com/techanswers88/dplyr-slice). Use this new function to answer question 5 below.
@@ -65,10 +67,14 @@ Run the code below to learn about the `slice` function. Look specifically at the
 Problem 5. (4 points) Using the `slice_max()` or `slice_min()` function described above which species has the largest and smallest winter range?
 ```{r}
 slice_max(ecosphere, winter_range_area)
+
+#professor used `ecosphere %>%  select(scientific_name, winter_range_area) %>% slice_max(winter_range_area, n=1)
 ```
 
 ```{r}
 slice_min(ecosphere, winter_range_area)
+
+##professor used `ecosphere %>%  select(scientific_name, winter_range_area) %>% slice_min(winter_range_area, n=1)
 ```
 
 Problem 6. (2 points) The family Anatidae includes ducks, geese, and swans. Make a new object `ducks` that only includes species in the family Anatidae. Restrict this new dataframe to include all variables except order and family.
@@ -87,6 +93,8 @@ Problem 7. (2 points) We might assume that all ducks live in wetland habitat. Is
 ducks %>% 
   group_by(habitat) %>% 
   summarize(total=n())
+
+#professor used ducks %>% filter(habitat != "Wetland")
 ```
 ```{r}
 ducks %>% 
@@ -104,6 +112,8 @@ ducks %>%
   group_by(migratory_strategy) %>% 
   summarise(mean(log10_mass),
             total=n())
+
+#the professor did `summarize(mean_log10_mass = mean(log10_mass))
 ```
 Birds have a greater mass, the shorter the migratory distance. Furthermore, long distance migratory birds seem to be the lightest on average; however, we have to be cautious as the average may be slightly biased as there were only two individuals who are long distance migratory birds. 
 
@@ -121,6 +131,11 @@ eagles_new <- eagles %>%
   mutate(conservation_status = population_size<250000) %>% 
   select(common_name,scientific_name,population_size,conservation_status)
 eagles_new
+
+#professor used...
+#eagles <- eagles %>% 
+  #mutate(conservation_status = ifelse(population_size<250000, "threatened", "stable"))
+
 ```
 
 Problem 11. (2 points) Consider the results from questions 9 and 10. Are there any species for which their threatened status needs further study? How do you know?
@@ -128,6 +143,8 @@ Problem 11. (2 points) Consider the results from questions 9 and 10. Are there a
 ```{r}
 eagles_new %>% 
   filter(is.na(conservation_status))
+
+#need to use `is.na , nothing else will work 
 ```
 Yes, we would want to look more into the species that are described as NA because that shows we do not have enough data on that select species, so we do not know if the need more protection. 
 
