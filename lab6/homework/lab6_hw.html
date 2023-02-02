@@ -11,7 +11,7 @@
 
 <meta name="author" content="Laurine Cabiling" />
 
-<meta name="date" content="2023-02-01" />
+<meta name="date" content="2023-02-02" />
 
 <title>Lab 6 Homework</title>
 
@@ -376,7 +376,7 @@ display: none;
 
 <h1 class="title toc-ignore">Lab 6 Homework</h1>
 <h4 class="author">Laurine Cabiling</h4>
-<h4 class="date">2023-02-01</h4>
+<h4 class="date">2023-02-02</h4>
 
 </div>
 
@@ -760,6 +760,23 @@ is the Theragra chalcogramma, also known as the Alaska pollock</li>
 ##  9 Gadus morhua                13253
 ## 10 Thunnus alalunga            12019
 ## # … with 1,462 more rows</code></pre>
+<pre class="r"><code>fisheries_tidy %&gt;% 
+  filter(asfis_species_name == &quot;Theragra chalcogramma&quot;) %&gt;% 
+  select(asfis_species_name, common_name) </code></pre>
+<pre><code>## # A tibble: 469 × 2
+##    asfis_species_name    common_name                   
+##    &lt;chr&gt;                 &lt;chr&gt;                         
+##  1 Theragra chalcogramma Alaska pollock(=Walleye poll.)
+##  2 Theragra chalcogramma Alaska pollock(=Walleye poll.)
+##  3 Theragra chalcogramma Alaska pollock(=Walleye poll.)
+##  4 Theragra chalcogramma Alaska pollock(=Walleye poll.)
+##  5 Theragra chalcogramma Alaska pollock(=Walleye poll.)
+##  6 Theragra chalcogramma Alaska pollock(=Walleye poll.)
+##  7 Theragra chalcogramma Alaska pollock(=Walleye poll.)
+##  8 Theragra chalcogramma Alaska pollock(=Walleye poll.)
+##  9 Theragra chalcogramma Alaska pollock(=Walleye poll.)
+## 10 Theragra chalcogramma Alaska pollock(=Walleye poll.)
+## # … with 459 more rows</code></pre>
 <ol start="10" style="list-style-type: decimal">
 <li>Use the data to do at least one analysis of your choice.</li>
 </ol>

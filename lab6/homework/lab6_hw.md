@@ -1,7 +1,7 @@
 ---
 title: "Lab 6 Homework"
 author: "Laurine Cabiling"
-date: "2023-02-01"
+date: "2023-02-02"
 output:
   html_document: 
     theme: spacelab
@@ -486,6 +486,30 @@ fisheries_tidy_new %>%
 ##  9 Gadus morhua                13253
 ## 10 Thunnus alalunga            12019
 ## # … with 1,462 more rows
+```
+
+
+```r
+fisheries_tidy %>% 
+  filter(asfis_species_name == "Theragra chalcogramma") %>% 
+  select(asfis_species_name, common_name) 
+```
+
+```
+## # A tibble: 469 × 2
+##    asfis_species_name    common_name                   
+##    <chr>                 <chr>                         
+##  1 Theragra chalcogramma Alaska pollock(=Walleye poll.)
+##  2 Theragra chalcogramma Alaska pollock(=Walleye poll.)
+##  3 Theragra chalcogramma Alaska pollock(=Walleye poll.)
+##  4 Theragra chalcogramma Alaska pollock(=Walleye poll.)
+##  5 Theragra chalcogramma Alaska pollock(=Walleye poll.)
+##  6 Theragra chalcogramma Alaska pollock(=Walleye poll.)
+##  7 Theragra chalcogramma Alaska pollock(=Walleye poll.)
+##  8 Theragra chalcogramma Alaska pollock(=Walleye poll.)
+##  9 Theragra chalcogramma Alaska pollock(=Walleye poll.)
+## 10 Theragra chalcogramma Alaska pollock(=Walleye poll.)
+## # … with 459 more rows
 ```
 
 10. Use the data to do at least one analysis of your choice.

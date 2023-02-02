@@ -155,6 +155,12 @@ fisheries_tidy_new %>%
   arrange(desc(total_catch))
 ```
 
+```{r}
+fisheries_tidy %>% 
+  filter(asfis_species_name == "Theragra chalcogramma") %>% 
+  select(asfis_species_name, common_name) 
+```
+
 10. Use the data to do at least one analysis of your choice.
 ```{r}
 fisheries_tidy_new %>% 
