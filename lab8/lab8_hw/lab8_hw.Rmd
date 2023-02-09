@@ -106,8 +106,9 @@ average_entero_wide
 9. What was the most polluted beach in 2018?
 ```{r}
 average_entero_wide %>% 
-  select(site,"2018")
+  select(site,"2018") 
 ```
+
 The most polluted beach in 2018 was South Maroubra Rockpool at 112.127500 enterococci levels. 
 
 10. Please complete the class project survey at: [BIS 15L Group Project](https://forms.gle/H2j69Z3ZtbLH3efW6)
