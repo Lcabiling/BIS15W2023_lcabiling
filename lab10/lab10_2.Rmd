@@ -30,6 +30,13 @@ Please take 10 minutes to meet your partner(s) for the class project. Here is wh
 3. Browse around on the internet a little to see what is available- are your questions reasonable?    
 4. Make a plan to collect at least two different sources of data to share on Thursday.  
 
+## Possible Websites
+[NatureServe Explorer](https://explorer.natureserve.org/Search)
+[Center for Biological Diversity](https://www.biologicaldiversity.org/campaigns/ocean_plastics/#:~:text=Thousands%20of%20seabirds%20and%20sea,get%20caught%20in%20plastic%20litter.)
+[World Economic Forum](https://www.weforum.org/agenda/2022/02/extinction-threat-ocean-plastic-pollution/)
+[iucn](https://www.iucn.org/resources/issues-brief/marine-plastic-pollution)
+
+
 ## Resources
 - [ggplot2 cheatsheet](https://www.rstudio.com/wp-content/uploads/2015/03/ggplot2-cheatsheet.pdf)
 
@@ -75,7 +82,7 @@ At this point you should be comfortable building bar plots that shows counts of 
 
 Let's start by counting how many observations we have in each taxonomic group.
 ```{r}
-homerange %>% count(taxon)
+homerange %>% count(taxon, sort=T)
 ```
 
 Now let's make a bar plot of these data.
