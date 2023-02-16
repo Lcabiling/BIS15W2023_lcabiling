@@ -1,0 +1,25 @@
+---
+title: "Project"
+author: "Laurine Cabiling"
+date: "2023-02-16"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library("tidyverse")
+library("here")
+```
+
+```{r}
+here()
+read_csv("/Users/lcab2601/Desktop/BIS15W2023_lcabiling/Project /data/plastic_pollution.csv")
+```
+
+```{r}
+plastic_pollution <- read_csv(here("Project","data","plastic_pollution.csv"))
+```
+
