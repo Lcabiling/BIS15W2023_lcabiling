@@ -1,7 +1,7 @@
 ---
 title: "Lab 10 Homework"
 author: "Laurine Cabiling"
-date: "2023-02-14"
+date: "2023-02-15"
 output:
   html_document: 
     theme: spacelab
@@ -189,7 +189,12 @@ deserts %>%
 ```r
 deserts %>% 
   ggplot(aes(x=taxa))+
-  geom_bar(na.rm = T)
+  geom_bar(na.rm = T) +
+  scale_y_log10() +
+   theme(axis.text.x = element_text(hjust = 5))+
+   labs(title = "Total count of Observations given Taxa ",
+       x = "Taxa",
+       y = "log scales count")
 ```
 
 ![](lab10_hw_files/figure-html/unnamed-chunk-8-1.png)<!-- -->
@@ -197,11 +202,22 @@ deserts %>%
 4. For the taxa included in the study, use the fill option to show the proportion of individuals sampled by `plot_type.`
 
 ```r
-deserts %>% 
-  ggplot(aes(x = taxa, fill = plot_type)) + geom_bar() 
+options(scipen=999)
 ```
 
-![](lab10_hw_files/figure-html/unnamed-chunk-9-1.png)<!-- -->
+
+```r
+deserts %>% 
+  ggplot(aes(x = taxa, fill = plot_type)) + 
+  geom_bar(position = "dodge") +
+  scale_y_log10()+
+  theme(axis.text.x = element_text(hjust = 5))+
+   labs(title = "Distribution of plot type given the Taxa ",
+       x = NULL,
+       y = "log scales count")
+```
+
+![](lab10_hw_files/figure-html/unnamed-chunk-10-1.png)<!-- -->
 
 5. What is the range of weight for each species included in the study? Remove any observations of weight that are NA so they do not show up in the plot.
 
@@ -219,24 +235,32 @@ names(deserts)
 
 ```r
 deserts %>% 
-  ggplot(aes(x=species,y=weight))+
+  filter(weight != "NA") %>% 
+  ggplot(aes(x=species_id,y=weight))+
   geom_boxplot(na.rm = T)+
-  coord_flip()
+  theme(axis.text.x = element_text(angle = 60, hjust = 1))+
+  labs(title = "Distribution of weight for each species",
+       x = "Species ID",
+       y = "Weight")
 ```
 
-![](lab10_hw_files/figure-html/unnamed-chunk-11-1.png)<!-- -->
+![](lab10_hw_files/figure-html/unnamed-chunk-12-1.png)<!-- -->
 
 6. Add another layer to your answer from #4 using `geom_point` to get an idea of how many measurements were taken for each species.
 
 ```r
 deserts %>% 
-  ggplot(aes(x=species,y=weight))+
+  filter(weight != "NA") %>% 
+  ggplot(aes(x=species_id,y=weight))+
   geom_boxplot(na.rm = T)+
-  coord_flip()+
-  geom_point(na.rm = T)
+  geom_point(alpha = 0.3, color = "tomato", position = "jitter")+
+  theme(axis.text.x = element_text(angle = 60, hjust = 1))+
+  labs(title = "Distribution of weight for each species",
+       x = "Species ID",
+       y = "Weight")
 ```
 
-![](lab10_hw_files/figure-html/unnamed-chunk-12-1.png)<!-- -->
+![](lab10_hw_files/figure-html/unnamed-chunk-13-1.png)<!-- -->
 
 7. [Dipodomys merriami](https://en.wikipedia.org/wiki/Merriam's_kangaroo_rat) is the most frequently sampled animal in the study. How have the number of observations of this species changed over the years included in the study?
 
@@ -244,7 +268,7 @@ Based on the graph, we can see on average there is a downward trend in populatio
 
 ```r
 deserts %>% 
-  filter(species=="merriami") %>% 
+  filter(species_id == "DM") %>% 
   group_by(year) %>% 
   summarize(annual_total = n())
 ```
@@ -268,19 +292,18 @@ deserts %>%
 
 ```r
 deserts %>% 
-  filter(species=="merriami") %>% 
+  filter(species_id=="DM")%>% 
   group_by(year) %>% 
   summarize(annual_total = n()) %>% 
-  ggplot(aes(x=year,y=annual_total))+
-    geom_line()+
-    geom_smooth(method=lm)
+  ggplot(aes(x=as.factor(year),y=annual_total))+
+    geom_col()+
+    theme(axis.text.x = element_text(angle = 60, hjust = 1))+
+    labs(title = "Dipodomys merriami observations (1977-2002)",
+         x = NULL, 
+         y = "Total Individuals")
 ```
 
-```
-## `geom_smooth()` using formula = 'y ~ x'
-```
-
-![](lab10_hw_files/figure-html/unnamed-chunk-14-1.png)<!-- -->
+![](lab10_hw_files/figure-html/unnamed-chunk-15-1.png)<!-- -->
 
 8. What is the relationship between `weight` and `hindfoot` length? Consider whether or not over plotting is an issue.
 I personally cannot see any major difference between `geom_point` and `geom_jitter`. Furthermore, the relationship between weight and hindfoot length has four different cluster of data. Overall, the trend seems to be as weight increases, the hindfoot length also increases. 
@@ -291,7 +314,7 @@ deserts %>%
   geom_jitter(na.rm = T)
 ```
 
-![](lab10_hw_files/figure-html/unnamed-chunk-15-1.png)<!-- -->
+![](lab10_hw_files/figure-html/unnamed-chunk-16-1.png)<!-- -->
 
 ```r
 deserts %>% 
@@ -299,7 +322,7 @@ deserts %>%
   geom_point(na.rm = T)
 ```
 
-![](lab10_hw_files/figure-html/unnamed-chunk-16-1.png)<!-- -->
+![](lab10_hw_files/figure-html/unnamed-chunk-17-1.png)<!-- -->
 
 9. Which two species have, on average, the highest weight? Once you have identified them, make a new column that is a ratio of `weight` to `hindfoot_length`. Make a plot that shows the range of this new ratio and fill by sex.
 
@@ -328,16 +351,44 @@ deserts %>%
 ## # … with 30 more rows
 ```
 
+
 ```r
 deserts %>% 
   filter(species == "albigula"| species == "spectabilis") %>% 
-  select(species, weight, hindfoot_length, sex) %>% 
-  mutate(ratio = weight/hindfoot_length) %>% 
-  ggplot(aes(y=ratio, fill=sex))+
-  geom_boxplot(na.rm = T)
+  select(species, species_id)
 ```
 
-![](lab10_hw_files/figure-html/unnamed-chunk-18-1.png)<!-- -->
+```
+## # A tibble: 3,756 × 2
+##    species     species_id
+##    <chr>       <chr>     
+##  1 albigula    NL        
+##  2 albigula    NL        
+##  3 spectabilis DS        
+##  4 spectabilis DS        
+##  5 spectabilis DS        
+##  6 albigula    NL        
+##  7 spectabilis DS        
+##  8 albigula    NL        
+##  9 spectabilis DS        
+## 10 spectabilis DS        
+## # … with 3,746 more rows
+```
+
+
+```r
+deserts %>% 
+  filter(species_id == "NL" | species_id == "DS") %>% 
+  filter(weight != "NA" & hindfoot_length != "NA" & sex != "NA") %>% 
+  mutate(ratio = weight/hindfoot_length) %>% 
+  select(species_id, sex, weight, hindfoot_length, ratio) %>% 
+  ggplot(aes(x=species_id, y=ratio, fill=sex))+
+  geom_boxplot()+
+  labs(title = "Range of Weight/Hindfoot Length for species NL and DS",        x = "Species ID",
+       y = "Weight/Hindfoot Length")
+```
+
+![](lab10_hw_files/figure-html/unnamed-chunk-20-1.png)<!-- -->
 
 10. Make one plot of your choice! Make sure to include at least two of the aesthetics options you have learned.
 
@@ -372,10 +423,11 @@ deserts %>%
     labs(title = "Plot Type vs. Average Weight",
        x = "Plot Type",
        y = "Average Weight") +
-  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5))
+  theme(plot.title = element_text(size = rel(1.5), hjust = 0.5))+
+  theme(axis.text.x = element_text(angle = 50, hjust = 1))
 ```
 
-![](lab10_hw_files/figure-html/unnamed-chunk-20-1.png)<!-- -->
+![](lab10_hw_files/figure-html/unnamed-chunk-22-1.png)<!-- -->
 
 
 ## Push your final code to GitHub!
