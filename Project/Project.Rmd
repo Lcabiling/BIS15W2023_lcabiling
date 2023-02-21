@@ -12,6 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r}
 library("tidyverse")
 library("here")
+library("naniar")
 ```
 
 ```{r}
@@ -47,4 +48,9 @@ percapita_waste_vs_gdp_percaptia <- read_csv(here("Project", "data", "per-capita
 plastic_waste_per_capita <- read_csv(here("Project", "data", "plastic-waste-per-capita.csv"))
 ```
 
+```{r}
+naniar::miss_var_summary(percapita_waste_vs_gdp_percaptia)
+```
+
+https://ourworldindata.org/plastic-pollution
 
