@@ -16,10 +16,35 @@ library("here")
 
 ```{r}
 here()
-read_csv("/Users/lcab2601/Desktop/BIS15W2023_lcabiling/Project /data/plastic_pollution.csv")
+read_csv("/Users/lcab2601/Desktop/BIS15W2023_lcabiling/Project/data/plastic_pollution.csv")
 ```
 
 ```{r}
 plastic_pollution <- read_csv(here("Project","data","plastic_pollution.csv"))
 ```
+
+```{r}
+mismanaged_waste_global_total <- read_csv(here("Project", "data", "mismanaged-waste-global-total.csv"))
+```
+
+```{r}
+MLW_Data <- read_csv(here("Project", "data", "MLW_Data.csv"))
+```
+
+```{r}
+MLW_Meta <- read_csv(here("Project", "data", "MLW_Meta.csv"))
+```
+
+```{r}
+percapita_mismanaged_waste_vs_gdp_percaptia <- read_csv(here("Project", "data", "per-capita-mismanaged-plastic-waste-vs-gdp-per-capita.csv"))
+```
+
+```{r}
+percapita_waste_vs_gdp_percaptia <- read_csv(here("Project", "data", "per-capita-plastic-waste-vs-gdp-per-capita.csv"))
+```
+
+```{r}
+plastic_waste_per_capita <- read_csv(here("Project", "data", "plastic-waste-per-capita.csv"))
+```
+
 

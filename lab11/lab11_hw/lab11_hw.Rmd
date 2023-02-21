@@ -97,18 +97,6 @@ gapminder %>%
 ```
 ```{r}
 gapminder %>% 
-  filter(year >= 1952, year <= 2007) %>% 
-  mutate(year=as.factor(year)) %>% 
-  select(country, year, lifeExp) %>% 
-  ggplot(aes(group = year, x=year, y=lifeExp, fill=year))+
-  geom_boxplot()+
-  labs(title = "Distribution of Global Life Expectancy",
-       x = "Year",
-       y = "Life Expectancy") +
-  theme(plot.title = element_text(size=rel(1.25), hjust=0.5))
-```
-```{r}
-gapminder %>% 
   filter(year >=1952 | year<=2007) %>% 
   mutate(year=as.factor(year)) %>% 
   ggplot(aes(x=lifeExp, group=year, fill=year))+
@@ -248,8 +236,22 @@ gapminder %>%
 ```
 
 **10. Make one plot of your choice that uses faceting!**
-```{r}
 
+```{r}
+gapminder %>% 
+  filter(country == "China" | 
+          country == "India" |
+          country == "United States" |
+          country == "Indonesia" |
+          country == "Brazil") %>% 
+  select(country,year, gdpPercap, continent) %>% 
+  ggplot(aes(x=year, y=gdpPercap, color = country))+
+  geom_line()+
+  facet_wrap(.~continent)+
+  theme(axis.text.x = element_text(angle = 60, hjust = 1))+
+  labs(title = "Top 5 Countries of GDP/capita Growth",
+       x = "Year",
+       y = "GDP/capita")
 ```
 
 ## Push your final code to GitHub!
