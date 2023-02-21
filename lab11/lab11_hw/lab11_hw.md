@@ -1,6 +1,6 @@
 ---
 title: "Lab 11 Homework"
-author: "Please Add Your Name Here"
+author: "Laurine Cabiling"
 date: "2023-02-21"
 output:
   html_document: 
@@ -171,21 +171,6 @@ gapminder %>%
 
 ```r
 gapminder %>% 
-  filter(year >= 1952, year <= 2007) %>% 
-  mutate(year=as.factor(year)) %>% 
-  select(country, year, lifeExp) %>% 
-  ggplot(aes(group = year, x=year, y=lifeExp, fill=year))+
-  geom_boxplot()+
-  labs(title = "Distribution of Global Life Expectancy",
-       x = "Year",
-       y = "Life Expectancy") +
-  theme(plot.title = element_text(size=rel(1.25), hjust=0.5))
-```
-
-![](lab11_hw_files/figure-html/unnamed-chunk-13-1.png)<!-- -->
-
-```r
-gapminder %>% 
   filter(year >=1952 | year<=2007) %>% 
   mutate(year=as.factor(year)) %>% 
   ggplot(aes(x=lifeExp, group=year, fill=year))+
@@ -196,7 +181,7 @@ gapminder %>%
   theme(plot.title = element_text(size=rel(1.25), hjust=0.5))
 ```
 
-![](lab11_hw_files/figure-html/unnamed-chunk-14-1.png)<!-- -->
+![](lab11_hw_files/figure-html/unnamed-chunk-13-1.png)<!-- -->
 
 
 **3. How do the distributions of life expectancy compare for the years 1952 and 2007?**
@@ -216,7 +201,7 @@ gapminder %>%
   theme_clean()
 ```
 
-![](lab11_hw_files/figure-html/unnamed-chunk-15-1.png)<!-- -->
+![](lab11_hw_files/figure-html/unnamed-chunk-14-1.png)<!-- -->
 
 
 ```r
@@ -231,7 +216,7 @@ gapminder %>%
   theme(plot.title = element_text(size=rel(1.25), hjust=0.5))
 ```
 
-![](lab11_hw_files/figure-html/unnamed-chunk-16-1.png)<!-- -->
+![](lab11_hw_files/figure-html/unnamed-chunk-15-1.png)<!-- -->
 
 
 **4. Your answer above doesn't tell the whole story since life expectancy varies by region. Make a summary that shows the min, mean, and max life expectancy by continent for all years represented in the data.**
@@ -278,7 +263,7 @@ gapminder %>%
   theme_clean()
 ```
 
-![](lab11_hw_files/figure-html/unnamed-chunk-18-1.png)<!-- -->
+![](lab11_hw_files/figure-html/unnamed-chunk-17-1.png)<!-- -->
 
 ```r
 gapminder %>% 
@@ -293,7 +278,7 @@ gapminder %>%
   theme(plot.title = element_text(hjust = 0.5))
 ```
 
-![](lab11_hw_files/figure-html/unnamed-chunk-19-1.png)<!-- -->
+![](lab11_hw_files/figure-html/unnamed-chunk-18-1.png)<!-- -->
 
 
 **6. We are interested in the relationship between per capita GDP and life expectancy; i.e. does having more money help you live longer?**
@@ -310,7 +295,7 @@ gapminder %>%
   theme_clean()
 ```
 
-![](lab11_hw_files/figure-html/unnamed-chunk-20-1.png)<!-- -->
+![](lab11_hw_files/figure-html/unnamed-chunk-19-1.png)<!-- -->
 
 **7. Which countries have had the largest population growth since 1952?**
 
@@ -360,7 +345,7 @@ gapminder %>%
        y = "Population")
 ```
 
-![](lab11_hw_files/figure-html/unnamed-chunk-22-1.png)<!-- -->
+![](lab11_hw_files/figure-html/unnamed-chunk-21-1.png)<!-- -->
 
 
 **9. How does per-capita GDP growth compare between these same five countries?**
@@ -382,10 +367,29 @@ gapminder %>%
   theme_clean()
 ```
 
-![](lab11_hw_files/figure-html/unnamed-chunk-23-1.png)<!-- -->
+![](lab11_hw_files/figure-html/unnamed-chunk-22-1.png)<!-- -->
 
 **10. Make one plot of your choice that uses faceting!**
 
+
+```r
+gapminder %>% 
+  filter(country == "China" | 
+          country == "India" |
+          country == "United States" |
+          country == "Indonesia" |
+          country == "Brazil") %>% 
+  select(country,year, gdpPercap, continent) %>% 
+  ggplot(aes(x=year, y=gdpPercap, color = country))+
+  geom_line()+
+  facet_wrap(.~continent)+
+  theme(axis.text.x = element_text(angle = 60, hjust = 1))+
+  labs(title = "Top 5 Countries of GDP/capita Growth",
+       x = "Year",
+       y = "GDP/capita")
+```
+
+![](lab11_hw_files/figure-html/unnamed-chunk-23-1.png)<!-- -->
 
 ## Push your final code to GitHub!
 Please be sure that you check the `keep md` file in the knit preferences. 
