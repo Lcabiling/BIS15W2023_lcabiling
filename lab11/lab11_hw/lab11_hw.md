@@ -1,7 +1,7 @@
 ---
 title: "Lab 11 Homework"
 author: "Please Add Your Name Here"
-date: "2023-02-20"
+date: "2023-02-21"
 output:
   html_document: 
     theme: spacelab
@@ -153,6 +153,7 @@ The average global life expectancy has increased between 1952 and 2007.
 ```r
 gapminder %>% 
   filter(year >= 1952, year <= 2007) %>% 
+  mutate(year=as.factor(year)) %>% 
   group_by(year) %>%
   mutate(global_life_exp = mean(lifeExp)) %>% 
   arrange(desc(global_life_exp)) %>% 
@@ -168,13 +169,43 @@ gapminder %>%
 
 ![](lab11_hw_files/figure-html/unnamed-chunk-12-1.png)<!-- -->
 
+```r
+gapminder %>% 
+  filter(year >= 1952, year <= 2007) %>% 
+  mutate(year=as.factor(year)) %>% 
+  select(country, year, lifeExp) %>% 
+  ggplot(aes(group = year, x=year, y=lifeExp, fill=year))+
+  geom_boxplot()+
+  labs(title = "Distribution of Global Life Expectancy",
+       x = "Year",
+       y = "Life Expectancy") +
+  theme(plot.title = element_text(size=rel(1.25), hjust=0.5))
+```
+
+![](lab11_hw_files/figure-html/unnamed-chunk-13-1.png)<!-- -->
+
+```r
+gapminder %>% 
+  filter(year >=1952 | year<=2007) %>% 
+  mutate(year=as.factor(year)) %>% 
+  ggplot(aes(x=lifeExp, group=year, fill=year))+
+  geom_density(alpha=0.5)+
+  labs(title = "Distribution of Global Life Expectancy",
+       x = "Year",
+       y = "Life Expectancy") +
+  theme(plot.title = element_text(size=rel(1.25), hjust=0.5))
+```
+
+![](lab11_hw_files/figure-html/unnamed-chunk-14-1.png)<!-- -->
+
+
 **3. How do the distributions of life expectancy compare for the years 1952 and 2007?**
 
 
 ```r
 gapminder %>% 
-  mutate(year=as.factor(year)) %>% 
   filter(year == 1952 | year == 2007) %>% 
+  mutate(year=as.factor(year)) %>% 
   select(country, year, lifeExp) %>% 
   ggplot(aes(group = year, x=year, y=lifeExp, fill=year))+
   geom_boxplot()+
@@ -185,7 +216,23 @@ gapminder %>%
   theme_clean()
 ```
 
-![](lab11_hw_files/figure-html/unnamed-chunk-13-1.png)<!-- -->
+![](lab11_hw_files/figure-html/unnamed-chunk-15-1.png)<!-- -->
+
+
+```r
+gapminder %>% 
+  filter(year==1952 | year==2007) %>% 
+  mutate(year=as.factor(year)) %>% 
+  ggplot(aes(x=lifeExp, group=year, fill=year))+
+  geom_density(alpha=0.5)+
+  labs(title = "Distribution of Life Expectancy (1952 v. 2007)",
+       x = "Year",
+       y = "Life Expectancy") +
+  theme(plot.title = element_text(size=rel(1.25), hjust=0.5))
+```
+
+![](lab11_hw_files/figure-html/unnamed-chunk-16-1.png)<!-- -->
+
 
 **4. Your answer above doesn't tell the whole story since life expectancy varies by region. Make a summary that shows the min, mean, and max life expectancy by continent for all years represented in the data.**
 
@@ -231,7 +278,23 @@ gapminder %>%
   theme_clean()
 ```
 
-![](lab11_hw_files/figure-html/unnamed-chunk-15-1.png)<!-- -->
+![](lab11_hw_files/figure-html/unnamed-chunk-18-1.png)<!-- -->
+
+```r
+gapminder %>% 
+  group_by(year, continent) %>% 
+  summarize(mean=mean(lifeExp),
+            .groups = 'keep') %>% 
+  ggplot(aes(x=year, y=mean, group=continent, color=continent))+
+  geom_line()+
+    labs(title = "Distribution of life expectancy of each continent",
+       x = "Continent",
+       y = "Life Expectancy (year)")+
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+![](lab11_hw_files/figure-html/unnamed-chunk-19-1.png)<!-- -->
+
 
 **6. We are interested in the relationship between per capita GDP and life expectancy; i.e. does having more money help you live longer?**
 Yes, there seems to be some relationship between per capita GDP and life expectancy, specifically more money does seem to play a part in surviving to an older age.
@@ -247,7 +310,7 @@ gapminder %>%
   theme_clean()
 ```
 
-![](lab11_hw_files/figure-html/unnamed-chunk-16-1.png)<!-- -->
+![](lab11_hw_files/figure-html/unnamed-chunk-20-1.png)<!-- -->
 
 **7. Which countries have had the largest population growth since 1952?**
 
@@ -294,11 +357,11 @@ gapminder %>%
   theme(axis.text.x = element_text(angle = 60, hjust = 1))+
   labs(title = "Top 5 Countries of Population Growth",
        x = "Year",
-       y = "Population")+
-  theme_clean()
+       y = "Population")
 ```
 
-![](lab11_hw_files/figure-html/unnamed-chunk-18-1.png)<!-- -->
+![](lab11_hw_files/figure-html/unnamed-chunk-22-1.png)<!-- -->
+
 
 **9. How does per-capita GDP growth compare between these same five countries?**
 
@@ -319,7 +382,7 @@ gapminder %>%
   theme_clean()
 ```
 
-![](lab11_hw_files/figure-html/unnamed-chunk-19-1.png)<!-- -->
+![](lab11_hw_files/figure-html/unnamed-chunk-23-1.png)<!-- -->
 
 **10. Make one plot of your choice that uses faceting!**
 
