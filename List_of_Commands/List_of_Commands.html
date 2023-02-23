@@ -360,8 +360,18 @@ display: none;
 <p>#Intro This is a list of commands from lecture, excluding commands we
 may have used independtly from homework assignments. Not all the codes
 are runable because there is no connected files.</p>
-<div id="lab-1-commands" class="section level1">
-<h1>Lab 1 commands</h1>
+<p>##All Packages/libraries</p>
+<pre class="r"><code>#install.packages(&quot;tidyverse&quot;)
+#install.packages(&quot;janitor&quot;)
+#install.packages(&quot;skimr&quot;)
+#install.packages(&quot;palmerpenguins&quot;)
+#install.packages(&quot;naniar&quot;)
+#install.packages(&quot;here&quot;)
+#install.packages(&quot;RColorBrewer&quot;)
+#install.packages(&quot;paletteer&quot;)
+#install.packages(&quot;ggthemes&quot;)
+#install.packages(&quot;gtools&quot;)</code></pre>
+<p>#install.packages(““)# Lab 1 commands</p>
 <pre class="r"><code>#get working directory
 #getwd()
 #set working directory 
@@ -551,7 +561,6 @@ harry_potter_matrix[1:4]</code></pre>
 non_us_earnings &lt;- all_harry_potter_matrix[ ,2]
 mean(non_us_earnings)</code></pre>
 <pre><code>## [1] 666.6125</code></pre>
-</div>
 </div>
 <div id="lab-3-commands" class="section level1">
 <h1>Lab 3 commands</h1>
@@ -875,6 +884,1112 @@ things cleaner.</p>
 also work.</p>
 <pre class="r"><code>#penguins %&gt;%
 #  summarise(across(starts_with(&quot;bill&quot;), mean, na.rm=T))</code></pre>
+</div>
+<div id="lab-6" class="section level2">
+<h2>Lab 6</h2>
+<p>removes NAs from a variable</p>
+<pre class="r"><code>#filter(!is.na(date)) </code></pre>
+<div id="summary-statistics" class="section level4">
+<h4>summary statistics</h4>
+<p>sd() = standard deviation min() = minimum max() = maximum sum() = add
+n() = returns the length of a column first() = returns first value in a
+columns last() = reutrns last value in a column n_distinct() = number of
+distinct values ina columns</p>
+<p>summarize() function is useful when combined with group_by()</p>
+<p>group_by() must be categorical</p>
+<p><code>count()</code> is an easy way of determining how many
+observations you have within a column. It acts like a combination of
+<code>group_by()</code> and <code>n()</code></p>
+<pre class="r"><code>#gives the same data
+
+#penguins %&gt;% 
+  #count(island, sort = T) #sort=T sorts the column in descending order
+
+#penguins %&gt;% 
+  #group_by(island) %&gt;% 
+  #summarize(n=n())</code></pre>
+</div>
+</div>
+<div id="lab-7" class="section level2">
+<h2>Lab 7</h2>
+<p>Dealing with NAs</p>
+<p>is.na() = gives true/false for every data point any_na() = true/false
+in general</p>
+<p>Replacing values with NA (ie NA was given numerical value of
+-999)</p>
+<p>In begining when uploading data into R… data %&gt;% na_if(“-999”)</p>
+<p>counting amount of NAs in each variable
+summarize_all(~(sum(is.na(.))))</p>
+<p>Replacing NAs with na_if() and mutate() ex. domesticated to NA msleep
+%&gt;%<br />
+mutate(conservation_modified = na_if(conservation,
+“domesticated”))%&gt;% count(conservation_modified, sort = T)
+#previously there were only 29 NA’s</p>
+<p>Naniar package build to manage NA’s</p>
+<p>naniar::miss_var_summary()</p>
+</div>
+<div id="lab-8" class="section level2">
+<h2>Lab 8</h2>
+<p>here() read_csv(here(““,”“,”“))</p>
+<p><code>Tidy</code> data in the sense of the tidyverse follows three
+conventions:<br />
+(1) each variable has its own column<br />
+(2) each observation has its own row<br />
+(3) each value has its own cell</p>
+<p>wide format data = typically used for efficient data entry by
+scientists</p>
+<p>pivot_longer() to shift data from wide to long format</p>
+<p>Rules:<br />
++ <code>pivot_longer</code>(cols, names_to, values_to) +
+<code>cols</code> - Columns to pivot to longer format +
+<code>names_to</code> - Name of the new column; it will contain the
+column names of gathered columns as values + <code>values_to</code> -
+Name of the new column; it will contain the data stored in the values of
+gathered columns</p>
+<p>example of pivot_longer() heartrate %&gt;% pivot_longer(-patient,
+#patient will not pivot/move names_to = “drug”, #new column name
+values_to = “heartrate”) #values are moved to</p>
+<p>Specify a range of columns that you want to pivot. billboard2 &lt;-
+billboard %&gt;% pivot_longer(wk1:wk76, # a range of columns names_to =
+“week”, values_to = “rank”, values_drop_na = TRUE) #this will drop the
+NA’s Specify columns that you want to stay fixed.<br />
+billboard3 &lt;- billboard %&gt;% pivot_longer(-c(artist, track,
+date.entered), #specific columns names_to = “week”, values_to = “rank”,
+values_drop_na = TRUE)</p>
+<p>Identify columns by a prefix, remove the prefix and all NA’s.
+billboard %&gt;% pivot_longer( cols = starts_with(“wk”), names_to =
+“week”, names_prefix = “wk”, values_to = “rank”, values_drop_na =
+TRUE)</p>
+<p>More than one variable in a column name <code>names_sep</code> helps
+pull these apart, but we still have “exp” and “rep” to deal with.<br />
+qpcr_untidy %&gt;% pivot_longer( exp1_rep1:exp3_rep3, names_to=
+c(“experiment”, “replicate”), names_sep=“_“,
+values_to=”mRNA_expression”)</p>
+<p>separate()<br />
+More than one value or observation in a row This is often caused by an
+entry error, but R will not be able to work with it unless the values
+are separated. This doesn’t use <code>pivot_longer()</code> but is a
+common problem.</p>
+<pre><code>    length_data %&gt;% 
+        transform(length = str_split(length, &quot;;&quot;)) %&gt;%
+        unnest(length)  
+     </code></pre>
+<p>separate()` needs to know which column you want to split, the names
+of the new columns, and what to look for in terms of breaks in the
+data.</p>
+<pre><code>      heartrate2 %&gt;% 
+          separate(patient, into= c(&quot;patient&quot;, &quot;sex&quot;), sep = &quot;_&quot;)</code></pre>
+<p><code>unite()</code> is the opposite of separate(). Its syntax is
+straightforward. You only need to give a new column name and then list
+the columns to combine with a separation character.</p>
+<pre><code>      heartrate3 %&gt;% 
+          unite(patient_sex, &quot;patient&quot;, &quot;sex&quot;, sep=&quot; &quot;)
+
+Look at Hw Lab 9 for separation and plotting     
+    </code></pre>
+<p>pivot_wider() = goes from long data to wide data</p>
+<p>Rules:<br />
++ <code>pivot_wider</code>(names_from, values_from)<br />
++ <code>names_from</code> - Values in the <code>names_from</code> column
+will become new column names<br />
++ <code>values_from</code> - Cell values will be taken from the
+<code>values_from</code> column</p>
+<p>When using <code>pivot_wider()</code> we use <code>names_from</code>
+to identify the variables (new column names) and
+<code>values_from</code> to identify the values associated with the new
+columns.</p>
+<pre><code>  tb_data %&gt;% 
+        pivot_wider(names_from = &quot;key&quot;, 
+                              #the observations under key will become new columns
+                    values_from = &quot;value&quot;)
+                    </code></pre>
+<p>With multiple variables<br />
+edu_level %&gt;% pivot_wider(names_from = (education_level), #new column
+names come from the education_level column values_from = c(mean_income,
+n)) #values come from two separate columns ## Lab 9</p>
+<p>Data Types + <code>discrete</code> quantitative data that only
+contains integers + <code>continuous</code> quantitative data that can
+take any numerical value + <code>categorical</code> qualitative data
+that can take on a limited number of values</p>
+<p>coord_flip() = switches the x and y axis to make things look neater
+if required</p>
+<p>Plotting</p>
+<p>Boxplots Boxplots help us visualize a range of values. So, on the
+x-axis we typically have something categorical and the y-axis is the
+range. In the case below, we are plotting <code>log10.mass</code> by
+taxonomic class in the <code>homerange</code> data.
+<code>geom_boxplot()</code> is the geom type for a standard box plot.
+The center line in each box represents the median, not the mean.</p>
+<pre><code>    ggplot(dataset, aes(x= , y= )) +
+      geom_boxplot()</code></pre>
+<p>Scatterplot Scatter plots are good at revealing relationships that
+are not readily visible in the raw data. For now, we will not add
+regression lines or calculate any r<sup>2</sup> values. Scatter plots
+allow for comparisons of two continuous variables.</p>
+<pre><code>    ggplot(dataset, aes(x= , y= )) +
+      geom_point()
+      </code></pre>
+<p>In big data sets with lots of overlapping values, over-plotting can
+be an issue. <code>geom_jitter()</code> is similar to
+<code>geom_point()</code> but it helps with over plotting by adding some
+random noise to the data and separating some of the individual
+points.</p>
+<pre><code>     ggplot(dataset, aes(x= , y= )) +
+      geom_jitter()</code></pre>
+<p>To add a regression (best of fit) line, we just add another layer.
+“se” is standard error, T = True/ F= False</p>
+<pre><code>    ggplot(dataset, aes(x= , y= )) +
+      geom_point() +
+      geom_smooth(method = lm, se = T)
+      </code></pre>
+<p>Bar Plots:</p>
+<pre><code>geom_bar()
+  The simplest type of bar plot counts the number of observations in a categorical              variable. Notice that we do not specify a y-axis because it is count by default.
+
+      ggplot(dataset, aes(x= )) +
+        geom_bar()
+        
+geom_bar() with stat=&quot;identity&quot;
+  `stat=&quot;identity&quot;` allows us to map a variable to the y-axis so that we aren&#39;t               restricted to counts.
+
+  Example:
+    homerange %&gt;% 
+        filter(family==&quot;salmonidae&quot;) %&gt;% 
+        ggplot(aes(x=common.name, y=log10.mass))+
+        geom_bar(stat=&quot;identity&quot;)
+
+geom_col()
+  This allows us to specify an x-axis and a y-axis
+    
+      ggplot(dataset, aes(x= )) +
+        geom_col()
+        </code></pre>
+<p>Barplots and multiple variables Use fill to build a stacked bar plot
+that shows the proportions of a given dataset group</p>
+<pre><code>    ex.
+        homerange %&gt;% 
+          ggplot(aes(x = taxon, fill = trophic.guild)) + geom_bar() +
+          coord_flip() +
+          labs(title = &quot;Observations by Taxon in Homerange Data&quot;,
+              x = &quot;Taxonomic Group&quot;,
+              fill = &quot;Trophic Guild&quot;)
+          
+  We can also have counts of each trophic guild within taxonomic group shown                side-by-side by specifying ...
+  
+  position=&quot;dodge&quot;
+   
+    ex. 
+      homerange %&gt;% 
+        ggplot(aes(x = taxon, fill = trophic.guild)) + geom_bar(position = &quot;dodge&quot;) +
+        coord_flip() +
+        labs(title = &quot;Observations by Taxon in Homerange Data&quot;,
+            x = &quot;Taxonomic Group&quot;,
+            fill = &quot;Trophic Guild&quot;)
+  
+ Here is the same plot oriented vertically
+      homerange %&gt;% 
+        ggplot(aes(x = taxon, fill = trophic.guild)) +
+        geom_bar(position = &quot;dodge&quot;) +
+        theme(axis.text.x = element_text(angle = 60, hjust = 1)) +
+        labs(title = &quot;Observations by Taxon in Homerange Data&quot;,
+            x = &quot;Taxonomic Group&quot;,
+            fill= &quot;Trophic Guild&quot;)
+            
+ We can also scale all bars to a percentage (or proportion).
+    homerange %&gt;% 
+      ggplot(aes(x = taxon, fill = trophic.guild))+
+      geom_bar(position = position_fill())+ 
+      scale_y_continuous(labels = scales::percent)+
+      coord_flip()
+ </code></pre>
+</div>
+<div id="lab-10" class="section level2">
+<h2>Lab 10</h2>
+<p>Remove/cancel scientific notation for the session option 1:
+options(scipen == value) ex. options(scipen == 999) option 2:
+scale_y_log10()</p>
+<p>Reorder x: `ggplot(aes(x=reorder(x-data, y-data), y=y-data))</p>
+<p>####Aesthetics</p>
+<p>Labels: To add custom labels, we use the <code>labs</code> command.
+labs()</p>
+<pre><code>+ labs(title = &quot;&quot;,
+    x=&quot;&quot;,
+    y=&quot;&quot;)</code></pre>
+<p>Theme: We can improve the plot further by adjusting the size and face
+of the text. <code>theme()</code></p>
+<pre><code>+  theme(plot.title = element_text(size=rel(1.25), hjust=0.5))
+
+`rel()` option changes the relative size of the title to keep things consistent.   
+       the rel() gives size of the title
+`hjust` allows control of title position.
+      the hjust = 1 (all the way right) ; =0 (all the way to the left) ; =0.5 (in the                 center) </code></pre>
+<p>Fill: is a common grouping option; notice that an appropriate key is
+displayed when you use one of these options. fill=</p>
+<pre><code>  ex.
+    elephants %&gt;% 
+        ggplot(aes(x=sex, fill=sex))+
+        geom_bar()
+        </code></pre>
+<p><code>size</code> adjusts the size of points relative to a continuous
+variable. size=</p>
+<pre><code>  ex. 
+    life_history %&gt;% 
+        ggplot(aes(x=gestation,y=log10(mass), size=mass))+
+        geom_point(na.rm = T)
+        
+  Play with point size.
+    +geom_point(size=2)
+    
+  Map shapes to another categorical variable.
+    geom_point(aes(shape=thermoregulation, color=thermoregulation), size=1.75)</code></pre>
+<p>Using <code>group</code> In addition to <code>fill</code>,
+<code>group</code> is an aesthetic that accomplishes the same function
+but does not add color.</p>
+<pre><code>  ex. 
+      I use `group` to make individual box plots for each taxon.
+          homerange %&gt;% 
+              ggplot(aes(x = class, y = log10.mass, group = taxon)) +
+              geom_boxplot()
+      I can also use `fill` to associate the different taxa with a color coded key.
+          homerange %&gt;% 
+              ggplot(aes(x = class, y = log10.mass, fill = taxon)) +
+              geom_boxplot()
+              </code></pre>
+</div>
+<div id="lab-11" class="section level2">
+<h2>Lab 11</h2>
+<p>Plotting:</p>
+<p>Line Plots: Line plots are great when you need to show changes over
+time. geom_line()</p>
+<pre><code>  ggplot(aes(x= , y= , group= , color= ))+
+    geom_line()+
+    geom_point(shape = )
+    
+  ex. 
+    deserts2 %&gt;% 
+      filter(species_id==&quot;DM&quot; | species_id==&quot;DS&quot;) %&gt;% 
+      group_by(year, species_id) %&gt;% 
+      summarise(n=n(), .groups=&#39;keep&#39;) %&gt;% 
+      ggplot(aes(x=year, y=n, group=species_id, color=species_id))+
+      geom_line()+
+      geom_point(shape=5)+
+      theme(axis.text.x = element_text(angle = 60, hjust = 1))+
+      labs(title = &quot;Number of samples for species DM &amp; DS&quot;,
+          x = &quot;Year&quot;,
+          fill = &quot;n&quot;)
+          </code></pre>
+<p>Histograms: Histograms are frequently used by biologists; they show
+the distribution of continuous variables. As students, you almost
+certainly have seen histograms of grade distributions. Without getting
+into the statistics, a histogram <code>bins</code> the data and you
+specify the number of bins that encompass a range of observations. For
+something like grades, this is easy because the number of bins
+corresponds to the grades A-F. By default, R uses a formula to calculate
+the number of bins but some adjustment is often required.</p>
+<p>geom_histogram()</p>
+<pre><code>  ex. 
+  homerange %&gt;% 
+    ggplot(aes(x = log10.mass)) +
+    geom_histogram(alpha = 0.4, color = &quot;black&quot;, fill = &quot;lightgreen&quot;, bins=40)+
+    labs(title = &quot;Distribution of Body Mass&quot;)</code></pre>
+<p>Colors: Let’s play with the colors. This shows all 657 of R’s
+built-in colors. Notice that <code>color</code> and <code>fill</code> do
+different things!</p>
+<pre><code>  grDevices::colors()
+      #lists all available colors</code></pre>
+<p>[1] “white”<br />
+[2] “aliceblue”<br />
+[3] “antiquewhite”<br />
+[4] “antiquewhite1”<br />
+[5] “antiquewhite2”<br />
+[6] “antiquewhite3”<br />
+[7] “antiquewhite4”<br />
+[8] “aquamarine”<br />
+[9] “aquamarine1”<br />
+[10] “aquamarine2”<br />
+[11] “aquamarine3”<br />
+[12] “aquamarine4”<br />
+[13] “azure”<br />
+[14] “azure1”<br />
+[15] “azure2”<br />
+[16] “azure3”<br />
+[17] “azure4”<br />
+[18] “beige”<br />
+[19] “bisque”<br />
+[20] “bisque1”<br />
+[21] “bisque2”<br />
+[22] “bisque3”<br />
+[23] “bisque4”<br />
+[24] “black”<br />
+[25] “blanchedalmond”<br />
+[26] “blue”<br />
+[27] “blue1”<br />
+[28] “blue2”<br />
+[29] “blue3”<br />
+[30] “blue4”<br />
+[31] “blueviolet”<br />
+[32] “brown”<br />
+[33] “brown1”<br />
+[34] “brown2”<br />
+[35] “brown3”<br />
+[36] “brown4”<br />
+[37] “burlywood”<br />
+[38] “burlywood1”<br />
+[39] “burlywood2”<br />
+[40] “burlywood3”<br />
+[41] “burlywood4”<br />
+[42] “cadetblue”<br />
+[43] “cadetblue1”<br />
+[44] “cadetblue2”<br />
+[45] “cadetblue3”<br />
+[46] “cadetblue4”<br />
+[47] “chartreuse”<br />
+[48] “chartreuse1”<br />
+[49] “chartreuse2”<br />
+[50] “chartreuse3”<br />
+[51] “chartreuse4”<br />
+[52] “chocolate”<br />
+[53] “chocolate1”<br />
+[54] “chocolate2”<br />
+[55] “chocolate3”<br />
+[56] “chocolate4”<br />
+[57] “coral”<br />
+[58] “coral1”<br />
+[59] “coral2”<br />
+[60] “coral3”<br />
+[61] “coral4”<br />
+[62] “cornflowerblue”<br />
+[63] “cornsilk”<br />
+[64] “cornsilk1”<br />
+[65] “cornsilk2”<br />
+[66] “cornsilk3”<br />
+[67] “cornsilk4”<br />
+[68] “cyan”<br />
+[69] “cyan1”<br />
+[70] “cyan2”<br />
+[71] “cyan3”<br />
+[72] “cyan4”<br />
+[73] “darkblue”<br />
+[74] “darkcyan”<br />
+[75] “darkgoldenrod”<br />
+[76] “darkgoldenrod1”<br />
+[77] “darkgoldenrod2”<br />
+[78] “darkgoldenrod3”<br />
+[79] “darkgoldenrod4”<br />
+[80] “darkgray”<br />
+[81] “darkgreen”<br />
+[82] “darkgrey”<br />
+[83] “darkkhaki”<br />
+[84] “darkmagenta”<br />
+[85] “darkolivegreen”<br />
+[86] “darkolivegreen1”<br />
+[87] “darkolivegreen2”<br />
+[88] “darkolivegreen3”<br />
+[89] “darkolivegreen4”<br />
+[90] “darkorange”<br />
+[91] “darkorange1”<br />
+[92] “darkorange2”<br />
+[93] “darkorange3”<br />
+[94] “darkorange4”<br />
+[95] “darkorchid”<br />
+[96] “darkorchid1”<br />
+[97] “darkorchid2”<br />
+[98] “darkorchid3”<br />
+[99] “darkorchid4”<br />
+[100] “darkred”<br />
+[101] “darksalmon”<br />
+[102] “darkseagreen”<br />
+[103] “darkseagreen1”<br />
+[104] “darkseagreen2”<br />
+[105] “darkseagreen3”<br />
+[106] “darkseagreen4”<br />
+[107] “darkslateblue”<br />
+[108] “darkslategray”<br />
+[109] “darkslategray1”<br />
+[110] “darkslategray2”<br />
+[111] “darkslategray3”<br />
+[112] “darkslategray4”<br />
+[113] “darkslategrey”<br />
+[114] “darkturquoise”<br />
+[115] “darkviolet”<br />
+[116] “deeppink”<br />
+[117] “deeppink1”<br />
+[118] “deeppink2”<br />
+[119] “deeppink3”<br />
+[120] “deeppink4”<br />
+[121] “deepskyblue”<br />
+[122] “deepskyblue1”<br />
+[123] “deepskyblue2”<br />
+[124] “deepskyblue3”<br />
+[125] “deepskyblue4”<br />
+[126] “dimgray”<br />
+[127] “dimgrey”<br />
+[128] “dodgerblue”<br />
+[129] “dodgerblue1”<br />
+[130] “dodgerblue2”<br />
+[131] “dodgerblue3”<br />
+[132] “dodgerblue4”<br />
+[133] “firebrick”<br />
+[134] “firebrick1”<br />
+[135] “firebrick2”<br />
+[136] “firebrick3”<br />
+[137] “firebrick4”<br />
+[138] “floralwhite”<br />
+[139] “forestgreen”<br />
+[140] “gainsboro”<br />
+[141] “ghostwhite”<br />
+[142] “gold”<br />
+[143] “gold1”<br />
+[144] “gold2”<br />
+[145] “gold3”<br />
+[146] “gold4”<br />
+[147] “goldenrod”<br />
+[148] “goldenrod1”<br />
+[149] “goldenrod2”<br />
+[150] “goldenrod3”<br />
+[151] “goldenrod4”<br />
+[152] “gray”<br />
+[153] “gray0”<br />
+[154] “gray1”<br />
+[155] “gray2”<br />
+[156] “gray3”<br />
+[157] “gray4”<br />
+[158] “gray5”<br />
+[159] “gray6”<br />
+[160] “gray7”<br />
+[161] “gray8”<br />
+[162] “gray9”<br />
+[163] “gray10”<br />
+[164] “gray11”<br />
+[165] “gray12”<br />
+[166] “gray13”<br />
+[167] “gray14”<br />
+[168] “gray15”<br />
+[169] “gray16”<br />
+[170] “gray17”<br />
+[171] “gray18”<br />
+[172] “gray19”<br />
+[173] “gray20”<br />
+[174] “gray21”<br />
+[175] “gray22”<br />
+[176] “gray23”<br />
+[177] “gray24”<br />
+[178] “gray25”<br />
+[179] “gray26”<br />
+[180] “gray27”<br />
+[181] “gray28”<br />
+[182] “gray29”<br />
+[183] “gray30”<br />
+[184] “gray31”<br />
+[185] “gray32”<br />
+[186] “gray33”<br />
+[187] “gray34”<br />
+[188] “gray35”<br />
+[189] “gray36”<br />
+[190] “gray37”<br />
+[191] “gray38”<br />
+[192] “gray39”<br />
+[193] “gray40”<br />
+[194] “gray41”<br />
+[195] “gray42”<br />
+[196] “gray43”<br />
+[197] “gray44”<br />
+[198] “gray45”<br />
+[199] “gray46”<br />
+[200] “gray47”<br />
+[201] “gray48”<br />
+[202] “gray49”<br />
+[203] “gray50”<br />
+[204] “gray51”<br />
+[205] “gray52”<br />
+[206] “gray53”<br />
+[207] “gray54”<br />
+[208] “gray55”<br />
+[209] “gray56”<br />
+[210] “gray57”<br />
+[211] “gray58”<br />
+[212] “gray59”<br />
+[213] “gray60”<br />
+[214] “gray61”<br />
+[215] “gray62”<br />
+[216] “gray63”<br />
+[217] “gray64”<br />
+[218] “gray65”<br />
+[219] “gray66”<br />
+[220] “gray67”<br />
+[221] “gray68”<br />
+[222] “gray69”<br />
+[223] “gray70”<br />
+[224] “gray71”<br />
+[225] “gray72”<br />
+[226] “gray73”<br />
+[227] “gray74”<br />
+[228] “gray75”<br />
+[229] “gray76”<br />
+[230] “gray77”<br />
+[231] “gray78”<br />
+[232] “gray79”<br />
+[233] “gray80”<br />
+[234] “gray81”<br />
+[235] “gray82”<br />
+[236] “gray83”<br />
+[237] “gray84”<br />
+[238] “gray85”<br />
+[239] “gray86”<br />
+[240] “gray87”<br />
+[241] “gray88”<br />
+[242] “gray89”<br />
+[243] “gray90”<br />
+[244] “gray91”<br />
+[245] “gray92”<br />
+[246] “gray93”<br />
+[247] “gray94”<br />
+[248] “gray95”<br />
+[249] “gray96”<br />
+[250] “gray97”<br />
+[251] “gray98”<br />
+[252] “gray99”<br />
+[253] “gray100”<br />
+[254] “green”<br />
+[255] “green1”<br />
+[256] “green2”<br />
+[257] “green3”<br />
+[258] “green4”<br />
+[259] “greenyellow”<br />
+[260] “grey”<br />
+[261] “grey0”<br />
+[262] “grey1”<br />
+[263] “grey2”<br />
+[264] “grey3”<br />
+[265] “grey4”<br />
+[266] “grey5”<br />
+[267] “grey6”<br />
+[268] “grey7”<br />
+[269] “grey8”<br />
+[270] “grey9”<br />
+[271] “grey10”<br />
+[272] “grey11”<br />
+[273] “grey12”<br />
+[274] “grey13”<br />
+[275] “grey14”<br />
+[276] “grey15”<br />
+[277] “grey16”<br />
+[278] “grey17”<br />
+[279] “grey18”<br />
+[280] “grey19”<br />
+[281] “grey20”<br />
+[282] “grey21”<br />
+[283] “grey22”<br />
+[284] “grey23”<br />
+[285] “grey24”<br />
+[286] “grey25”<br />
+[287] “grey26”<br />
+[288] “grey27”<br />
+[289] “grey28”<br />
+[290] “grey29”<br />
+[291] “grey30”<br />
+[292] “grey31”<br />
+[293] “grey32”<br />
+[294] “grey33”<br />
+[295] “grey34”<br />
+[296] “grey35”<br />
+[297] “grey36”<br />
+[298] “grey37”<br />
+[299] “grey38”<br />
+[300] “grey39”<br />
+[301] “grey40”<br />
+[302] “grey41”<br />
+[303] “grey42”<br />
+[304] “grey43”<br />
+[305] “grey44”<br />
+[306] “grey45”<br />
+[307] “grey46”<br />
+[308] “grey47”<br />
+[309] “grey48”<br />
+[310] “grey49”<br />
+[311] “grey50”<br />
+[312] “grey51”<br />
+[313] “grey52”<br />
+[314] “grey53”<br />
+[315] “grey54”<br />
+[316] “grey55”<br />
+[317] “grey56”<br />
+[318] “grey57”<br />
+[319] “grey58”<br />
+[320] “grey59”<br />
+[321] “grey60”<br />
+[322] “grey61”<br />
+[323] “grey62”<br />
+[324] “grey63”<br />
+[325] “grey64”<br />
+[326] “grey65”<br />
+[327] “grey66”<br />
+[328] “grey67”<br />
+[329] “grey68”<br />
+[330] “grey69”<br />
+[331] “grey70”<br />
+[332] “grey71”<br />
+[333] “grey72”<br />
+[334] “grey73”<br />
+[335] “grey74”<br />
+[336] “grey75”<br />
+[337] “grey76”<br />
+[338] “grey77”<br />
+[339] “grey78”<br />
+[340] “grey79”<br />
+[341] “grey80”<br />
+[342] “grey81”<br />
+[343] “grey82”<br />
+[344] “grey83”<br />
+[345] “grey84”<br />
+[346] “grey85”<br />
+[347] “grey86”<br />
+[348] “grey87”<br />
+[349] “grey88”<br />
+[350] “grey89”<br />
+[351] “grey90”<br />
+[352] “grey91”<br />
+[353] “grey92”<br />
+[354] “grey93”<br />
+[355] “grey94”<br />
+[356] “grey95”<br />
+[357] “grey96”<br />
+[358] “grey97”<br />
+[359] “grey98”<br />
+[360] “grey99”<br />
+[361] “grey100”<br />
+[362] “honeydew”<br />
+[363] “honeydew1”<br />
+[364] “honeydew2”<br />
+[365] “honeydew3”<br />
+[366] “honeydew4”<br />
+[367] “hotpink”<br />
+[368] “hotpink1”<br />
+[369] “hotpink2”<br />
+[370] “hotpink3”<br />
+[371] “hotpink4”<br />
+[372] “indianred”<br />
+[373] “indianred1”<br />
+[374] “indianred2”<br />
+[375] “indianred3”<br />
+[376] “indianred4”<br />
+[377] “ivory”<br />
+[378] “ivory1”<br />
+[379] “ivory2”<br />
+[380] “ivory3”<br />
+[381] “ivory4”<br />
+[382] “khaki”<br />
+[383] “khaki1”<br />
+[384] “khaki2”<br />
+[385] “khaki3”<br />
+[386] “khaki4”<br />
+[387] “lavender”<br />
+[388] “lavenderblush”<br />
+[389] “lavenderblush1”<br />
+[390] “lavenderblush2”<br />
+[391] “lavenderblush3”<br />
+[392] “lavenderblush4”<br />
+[393] “lawngreen”<br />
+[394] “lemonchiffon”<br />
+[395] “lemonchiffon1”<br />
+[396] “lemonchiffon2”<br />
+[397] “lemonchiffon3”<br />
+[398] “lemonchiffon4”<br />
+[399] “lightblue”<br />
+[400] “lightblue1”<br />
+[401] “lightblue2”<br />
+[402] “lightblue3”<br />
+[403] “lightblue4”<br />
+[404] “lightcoral”<br />
+[405] “lightcyan”<br />
+[406] “lightcyan1”<br />
+[407] “lightcyan2”<br />
+[408] “lightcyan3”<br />
+[409] “lightcyan4”<br />
+[410] “lightgoldenrod”<br />
+[411] “lightgoldenrod1”<br />
+[412] “lightgoldenrod2”<br />
+[413] “lightgoldenrod3”<br />
+[414] “lightgoldenrod4”<br />
+[415] “lightgoldenrodyellow” [416] “lightgray”<br />
+[417] “lightgreen”<br />
+[418] “lightgrey”<br />
+[419] “lightpink”<br />
+[420] “lightpink1”<br />
+[421] “lightpink2”<br />
+[422] “lightpink3”<br />
+[423] “lightpink4”<br />
+[424] “lightsalmon”<br />
+[425] “lightsalmon1”<br />
+[426] “lightsalmon2”<br />
+[427] “lightsalmon3”<br />
+[428] “lightsalmon4”<br />
+[429] “lightseagreen”<br />
+[430] “lightskyblue”<br />
+[431] “lightskyblue1”<br />
+[432] “lightskyblue2”<br />
+[433] “lightskyblue3”<br />
+[434] “lightskyblue4”<br />
+[435] “lightslateblue”<br />
+[436] “lightslategray”<br />
+[437] “lightslategrey”<br />
+[438] “lightsteelblue”<br />
+[439] “lightsteelblue1”<br />
+[440] “lightsteelblue2”<br />
+[441] “lightsteelblue3”<br />
+[442] “lightsteelblue4”<br />
+[443] “lightyellow”<br />
+[444] “lightyellow1”<br />
+[445] “lightyellow2”<br />
+[446] “lightyellow3”<br />
+[447] “lightyellow4”<br />
+[448] “limegreen”<br />
+[449] “linen”<br />
+[450] “magenta”<br />
+[451] “magenta1”<br />
+[452] “magenta2”<br />
+[453] “magenta3”<br />
+[454] “magenta4”<br />
+[455] “maroon”<br />
+[456] “maroon1”<br />
+[457] “maroon2”<br />
+[458] “maroon3”<br />
+[459] “maroon4”<br />
+[460] “mediumaquamarine”<br />
+[461] “mediumblue”<br />
+[462] “mediumorchid”<br />
+[463] “mediumorchid1”<br />
+[464] “mediumorchid2”<br />
+[465] “mediumorchid3”<br />
+[466] “mediumorchid4”<br />
+[467] “mediumpurple”<br />
+[468] “mediumpurple1”<br />
+[469] “mediumpurple2”<br />
+[470] “mediumpurple3”<br />
+[471] “mediumpurple4”<br />
+[472] “mediumseagreen”<br />
+[473] “mediumslateblue”<br />
+[474] “mediumspringgreen”<br />
+[475] “mediumturquoise”<br />
+[476] “mediumvioletred”<br />
+[477] “midnightblue”<br />
+[478] “mintcream”<br />
+[479] “mistyrose”<br />
+[480] “mistyrose1”<br />
+[481] “mistyrose2”<br />
+[482] “mistyrose3”<br />
+[483] “mistyrose4”<br />
+[484] “moccasin”<br />
+[485] “navajowhite”<br />
+[486] “navajowhite1”<br />
+[487] “navajowhite2”<br />
+[488] “navajowhite3”<br />
+[489] “navajowhite4”<br />
+[490] “navy”<br />
+[491] “navyblue”<br />
+[492] “oldlace”<br />
+[493] “olivedrab”<br />
+[494] “olivedrab1”<br />
+[495] “olivedrab2”<br />
+[496] “olivedrab3”<br />
+[497] “olivedrab4”<br />
+[498] “orange”<br />
+[499] “orange1”<br />
+[500] “orange2”<br />
+[501] “orange3”<br />
+[502] “orange4”<br />
+[503] “orangered”<br />
+[504] “orangered1”<br />
+[505] “orangered2”<br />
+[506] “orangered3”<br />
+[507] “orangered4”<br />
+[508] “orchid”<br />
+[509] “orchid1”<br />
+[510] “orchid2”<br />
+[511] “orchid3”<br />
+[512] “orchid4”<br />
+[513] “palegoldenrod”<br />
+[514] “palegreen”<br />
+[515] “palegreen1”<br />
+[516] “palegreen2”<br />
+[517] “palegreen3”<br />
+[518] “palegreen4”<br />
+[519] “paleturquoise”<br />
+[520] “paleturquoise1”<br />
+[521] “paleturquoise2”<br />
+[522] “paleturquoise3”<br />
+[523] “paleturquoise4”<br />
+[524] “palevioletred”<br />
+[525] “palevioletred1”<br />
+[526] “palevioletred2”<br />
+[527] “palevioletred3”<br />
+[528] “palevioletred4”<br />
+[529] “papayawhip”<br />
+[530] “peachpuff”<br />
+[531] “peachpuff1”<br />
+[532] “peachpuff2”<br />
+[533] “peachpuff3”<br />
+[534] “peachpuff4”<br />
+[535] “peru”<br />
+[536] “pink”<br />
+[537] “pink1”<br />
+[538] “pink2”<br />
+[539] “pink3”<br />
+[540] “pink4”<br />
+[541] “plum”<br />
+[542] “plum1”<br />
+[543] “plum2”<br />
+[544] “plum3”<br />
+[545] “plum4”<br />
+[546] “powderblue”<br />
+[547] “purple”<br />
+[548] “purple1”<br />
+[549] “purple2”<br />
+[550] “purple3”<br />
+[551] “purple4”<br />
+[552] “red”<br />
+[553] “red1”<br />
+[554] “red2”<br />
+[555] “red3”<br />
+[556] “red4”<br />
+[557] “rosybrown”<br />
+[558] “rosybrown1”<br />
+[559] “rosybrown2”<br />
+[560] “rosybrown3”<br />
+[561] “rosybrown4”<br />
+[562] “royalblue”<br />
+[563] “royalblue1”<br />
+[564] “royalblue2”<br />
+[565] “royalblue3”<br />
+[566] “royalblue4”<br />
+[567] “saddlebrown”<br />
+[568] “salmon”<br />
+[569] “salmon1”<br />
+[570] “salmon2”<br />
+[571] “salmon3”<br />
+[572] “salmon4”<br />
+[573] “sandybrown”<br />
+[574] “seagreen”<br />
+[575] “seagreen1”<br />
+[576] “seagreen2”<br />
+[577] “seagreen3”<br />
+[578] “seagreen4”<br />
+[579] “seashell”<br />
+[580] “seashell1”<br />
+[581] “seashell2”<br />
+[582] “seashell3”<br />
+[583] “seashell4”<br />
+[584] “sienna”<br />
+[585] “sienna1”<br />
+[586] “sienna2”<br />
+[587] “sienna3”<br />
+[588] “sienna4”<br />
+[589] “skyblue”<br />
+[590] “skyblue1”<br />
+[591] “skyblue2”<br />
+[592] “skyblue3”<br />
+[593] “skyblue4”<br />
+[594] “slateblue”<br />
+[595] “slateblue1”<br />
+[596] “slateblue2”<br />
+[597] “slateblue3”<br />
+[598] “slateblue4”<br />
+[599] “slategray”<br />
+[600] “slategray1”<br />
+[601] “slategray2”<br />
+[602] “slategray3”<br />
+[603] “slategray4”<br />
+[604] “slategrey”<br />
+[605] “snow”<br />
+[606] “snow1”<br />
+[607] “snow2”<br />
+[608] “snow3”<br />
+[609] “snow4”<br />
+[610] “springgreen”<br />
+[611] “springgreen1”<br />
+[612] “springgreen2”<br />
+[613] “springgreen3”<br />
+[614] “springgreen4”<br />
+[615] “steelblue”<br />
+[616] “steelblue1”<br />
+[617] “steelblue2”<br />
+[618] “steelblue3”<br />
+[619] “steelblue4”<br />
+[620] “tan”<br />
+[621] “tan1”<br />
+[622] “tan2”<br />
+[623] “tan3”<br />
+[624] “tan4”<br />
+[625] “thistle”<br />
+[626] “thistle1”<br />
+[627] “thistle2”<br />
+[628] “thistle3”<br />
+[629] “thistle4”<br />
+[630] “tomato”<br />
+[631] “tomato1”<br />
+[632] “tomato2”<br />
+[633] “tomato3”<br />
+[634] “tomato4”<br />
+[635] “turquoise”<br />
+[636] “turquoise1”<br />
+[637] “turquoise2”<br />
+[638] “turquoise3”<br />
+[639] “turquoise4”<br />
+[640] “violet”<br />
+[641] “violetred”<br />
+[642] “violetred1”<br />
+[643] “violetred2”<br />
+[644] “violetred3”<br />
+[645] “violetred4”<br />
+[646] “wheat”<br />
+[647] “wheat1”<br />
+[648] “wheat2”<br />
+[649] “wheat3”<br />
+[650] “wheat4”<br />
+[651] “whitesmoke”<br />
+[652] “yellow”<br />
+[653] “yellow1”<br />
+[654] “yellow2”<br />
+[655] “yellow3”<br />
+[656] “yellow4”<br />
+[657] “yellowgreen”</p>
+<p>Density Plots: Density plots are similar to histograms but they use a
+smoothing function to make the distribution more even and clean looking.
+They do not use bins. geom_density()</p>
+<pre><code>  ex. 
+    ggplot(aes(x = log10.mass)) +
+    geom_density(fill=&quot;deepskyblue4&quot;, alpha  =0.4, color = &quot;black&quot;)+
+    labs(title = &quot;Distribution of Body Mass&quot;)</code></pre>
+<p>I like to see both the histogram and the density curve so I often
+plot them together. Note that I assign the density plot a different
+color. homerange %&gt;% ggplot(aes(x=log10.mass)) + geom_histogram(aes(y
+= ..density..), fill = “deepskyblue4”, alpha = 0.4, color = “black”)+
+geom_density(color = “red”)+ labs(title = “Distribution of Body
+Mass”)</p>
+<p>Create Categories with mutate and case_when()
+<code>case_when()</code> is a very handy function from
+<code>dplyr</code> which allows us to calculate a new variable from
+other variables. We use <code>case_when()</code> within
+<code>mutate()</code> to do this.<code>case_when()</code> allows us to
+specify multiple conditions.</p>
+<pre><code>      ex. 
+        homerange &lt;- homerange %&gt;% 
+          mutate(mass_category = case_when(log10.mass &lt;= 1.75 ~ &quot;small&quot;,
+                                          log10.mass &gt; 1.75 &amp; log10.mass &lt;= 2.75 ~                                                             &quot;medium&quot;,
+                                          log10.mass &gt; 2.75 ~ &quot;large&quot;))
+
+library(gtools)
+  quantiles the values to make it easier to code case_when()
+      quartiles &lt;- quantcut(homerange$log10.hra)
+      table(quartiles)</code></pre>
+<p>Legends: legend.position = “”</p>
+<pre><code> ex.
+    p+theme_linedraw()+
+      theme(legend.position = &quot;bottom&quot;,
+      axis.text.x = element_text(angle = 60, hjust=1))+
+      labs(title = &quot;Observations by Taxon in Homerange Data&quot;,
+          x = NULL,
+          y= &quot;n&quot;,
+          fill = &quot;Trophic Guild&quot;)
+          </code></pre>
+<p>ggthemes Here is a list of the <code>ggthemes</code> [1]
+“theme_base”<br />
+[2] “theme_calc”<br />
+[3] “theme_clean”<br />
+[4] “theme_economist”<br />
+[5] “theme_economist_white” [6] “theme_excel”<br />
+[7] “theme_excel_new”<br />
+[8] “theme_few”<br />
+[9] “theme_fivethirtyeight” [10] “theme_foundation”<br />
+[11] “theme_gdocs”<br />
+[12] “theme_hc”<br />
+[13] “theme_igray”<br />
+[14] “theme_map”<br />
+[15] “theme_pander”<br />
+[16] “theme_par”<br />
+[17] “theme_solarized”<br />
+[18] “theme_solarized_2”<br />
+[19] “theme_solid”<br />
+[20] “theme_stata”<br />
+[21] “theme_tufte”<br />
+[22] “theme_wsj”</p>
+<p>RColorBrewer The default colors used by ggplot are often uninspiring.
+They don’t make plots pop out in presentations or publications, and you
+may want to use a customized palette to make things visually
+consistent.</p>
+<p>The thing to notice is that there are three different palettes: 1)
+sequential, 2) diverging, and 3) qualitative. Within each of these there
+are several selections. You can bring up the colors by using
+<code>display.brewer.pal()</code>. Specify the number of colors that you
+want and the palette name. Be Aware of color blindness</p>
+<pre><code>  ex. to see the color pallete 
+      display.brewer.pal(4,&quot;GnBu&quot;)</code></pre>
+<p>guidelines: +<code>scale_colour_brewer()</code> is for points<br />
++<code>scale_fill_brewer()</code> is for fills</p>
+<pre><code>  ex. 
+      + scale_fill_brewer(palette = &quot;YlGnBu&quot;)</code></pre>
+<p>Manually Setting Colors: You can also use <code>paleteer</code> to
+build a custom palette for consistency. To access the
+<code>paleteer</code> collection, I add it to a new object.</p>
+<pre><code>colors &lt;- paletteer::palettes_d_names
+
+Now we can display the palettes. Assign the palette to `my_palette` and then build         this base R bar plot. There are a lot of options; `paleteer` is a collection of          popular palettes.
+
+      my_palette &lt;- paletteer_d(&quot;ggprism::flames&quot;)
+      
+      ex.
+        barplot(rep(1,14), axes=FALSE, col=second_palette)
+      ex.  
+        Now we just identify `my_palette` as part of `scale_fill_manual()`
+        +scale_fill_manual(values=my_palette)
+        </code></pre>
+<p>Adjusting the x and y limits To adjust limits, we can use the
+<code>xlim</code> and <code>ylim</code> commands. When you do this, any
+data outside the specified ranges are not plotted. +xlim() +ylim()</p>
+<pre><code>    ex.
+      homerange %&gt;% 
+        ggplot(aes(x = log10.mass, y = log10.hra, color = locomotion)) +
+        geom_point() +
+        xlim(0, 4) +
+        ylim(1, 6)</code></pre>
+<p>Faceting It allows us to make multi-panel plots for easy
+comparison.</p>
+<p>ex. The problem is that the plot becomes very busy. It is hard to
+interpret with each migratory strategy mapped. We could build separate
+plots for each migratory strategy, but this also makes it harder to
+compare. Instead, we can use faceting to make a multi-panel plot.</p>
+<pre><code>  `facet_wrap()` 
+      makes a ribbon of panels, but you can control how you want them arranged.
+      
+      ecosphere %&gt;% 
+        ggplot(aes(x=diet, y=log10_mass, fill=migratory_strategy))+ 
+        geom_boxplot(alpha=0.4) + 
+        facet_wrap(~migratory_strategy, ncol=4)
+
+  `facet_grid()` 
+      allows control over the faceted variable; it can be arranged in rows or                      columns. 
+      Will also allow the comparison of two categorical variables, just remember a~b              where a is rows and b is columns.
+      rows~columns
+      
+      ecosphere %&gt;% 
+        ggplot(aes(x=diet, y=log10_mass, fill=migratory_strategy))+ 
+        geom_boxplot(alpha=0.4)+ 
+        facet_grid(migratory_strategy~.)
+      
+      ecosphere %&gt;% 
+        ggplot(aes(x=log10_mass))+
+        geom_density()+
+        facet_grid(diet~habitat, scales = &quot;free_y&quot;)
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      </code></pre>
 </div>
 </div>
 
