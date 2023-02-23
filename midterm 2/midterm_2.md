@@ -283,7 +283,10 @@ surgery %>%
   group_by(asa_status) %>% 
   ggplot(aes(x=bmi, group=asa_status, fill = asa_status))+
   geom_density(alpha=0.4)+
-  facet_wrap(asa_status~.)
+  facet_wrap(asa_status~.)+
+  labs(title = "Distribution of BMI by ASA status",
+       x = "BMI")+
+  theme_clean()
 ```
 
 ```
@@ -296,37 +299,166 @@ The variable `ccsmort30rate` is a measure of the overall 30-day mortality rate a
 
 7. (4 points) What are the 5 procedures associated with highest risk of 30-day mortality AND how do they compare with the 5 procedures with highest risk of complication? (hint: no need for a plot here)
 
+Nephrectomy; partial or complete and Endoscopy and endoscopic biopsy of the urinary tract are the two types of surgery that are 
+Colorectal resection and Small bowel resection are both 
+
 ```r
 surgery %>% 
   select(ahrq_ccs, ccsmort30rate, ccscomplicationrate) %>% 
   group_by(ahrq_ccs) %>% 
-  summarise(ave_ccsmort30rate = mean(ccsmort30rate))
+  summarise(ccsmort30rate_ = mean(ccsmort30rate)) %>% 
+  arrange(desc(ccsmort30rate_)) %>% 
+  slice(1:5)
 ```
 
 ```
-## # A tibble: 23 × 2
-##    ahrq_ccs                                             ave_ccsmort30rate
-##    <chr>                                                            <dbl>
-##  1 <Other>                                                       0.00425 
-##  2 Arthroplasty knee                                             0.00296 
-##  3 Colorectal resection                                          0.0167  
-##  4 Endoscopy and endoscopic biopsy of the urinary tract          0.00811 
-##  5 Gastrectomy; partial and total                                0.0127  
-##  6 Genitourinary incontinence procedures                         0.00433 
-##  7 Hip replacement; total and partial                            0.00740 
-##  8 Hysterectomy; abdominal and vaginal                           0.00196 
-##  9 Inguinal and femoral hernia repair                            0       
-## 10 Laminectomy; excision intervertebral disc                     0.000789
-## # … with 13 more rows
+## # A tibble: 5 × 2
+##   ahrq_ccs                                             ccsmort30rate_
+##   <chr>                                                         <dbl>
+## 1 Colorectal resection                                        0.0167 
+## 2 Small bowel resection                                       0.0129 
+## 3 Gastrectomy; partial and total                              0.0127 
+## 4 Endoscopy and endoscopic biopsy of the urinary tract        0.00811
+## 5 Spinal fusion                                               0.00742
 ```
 
+```r
+surgery %>% 
+  select(ahrq_ccs, ccsmort30rate, ccscomplicationrate) %>% 
+  group_by(ahrq_ccs) %>% 
+  summarise(ccscomplicationrate_ = mean(ccscomplicationrate)) %>% 
+  arrange(desc(ccscomplicationrate_)) %>% 
+  slice(1:5)
+```
 
-8. (3 points) Make a plot that compares the `ccsmort30rate` for all listed `ahrq_ccs` procedures.
+```
+## # A tibble: 5 × 2
+##   ahrq_ccs                         ccscomplicationrate_
+##   <chr>                                           <dbl>
+## 1 Small bowel resection                           0.466
+## 2 Colorectal resection                            0.312
+## 3 Nephrectomy; partial or complete                0.197
+## 4 Gastrectomy; partial and total                  0.190
+## 5 Spinal fusion                                   0.183
+```
+
+### 8. (3 points) Make a plot that compares the `ccsmort30rate` for all listed `ahrq_ccs` procedures.
+
+```r
+surgery %>% 
+  select(ahrq_ccs, ccsmort30rate) %>% 
+  group_by(ahrq_ccs) %>% 
+  summarise(ccsmort30rate_ = mean(ccsmort30rate)) %>% 
+  ggplot(aes(x=ahrq_ccs, y=ccsmort30rate_))+
+  geom_col()+
+  labs(title = "Distribution of Hospital Procedures",
+       y = "30 Day Mortality Rate",
+       x = "Hospital Procedures")+
+  coord_flip()+
+  theme_clean()
+```
+
+![](midterm_2_files/figure-html/unnamed-chunk-19-1.png)<!-- -->
 
 9. (4 points) When is the best month to have surgery? Make a chart that shows the 30-day mortality and complications for the patients by month. `mort30` is the variable that shows whether or not a patient survived 30 days post-operation.
 
+December is the best month to have a surgery because there is the fewest deaths, with January being the worst with the most deaths. 
+
+```r
+surgery %>% 
+  group_by(month) %>% 
+  count(mort30, sort = T) %>% 
+  arrange(n)
+```
+
+```
+## # A tibble: 24 × 3
+## # Groups:   month [12]
+##    month mort30     n
+##    <chr> <chr>  <int>
+##  1 Dec   Yes        4
+##  2 Nov   Yes        5
+##  3 Oct   Yes        8
+##  4 Aug   Yes        9
+##  5 May   Yes       10
+##  6 Apr   Yes       12
+##  7 Jul   Yes       12
+##  8 Mar   Yes       12
+##  9 Jun   Yes       14
+## 10 Sep   Yes       16
+## # … with 14 more rows
+```
+
+```r
+surgery %>% 
+  group_by(month) %>% 
+  select(month, ccsmort30rate, ccscomplicationrate) %>% 
+  summarise(ccsmort30rate_ = mean(ccsmort30rate),
+            ccscomplicationrate_ = mean(ccscomplicationrate))
+```
+
+```
+## # A tibble: 12 × 3
+##    month ccsmort30rate_ ccscomplicationrate_
+##    <chr>          <dbl>                <dbl>
+##  1 Apr          0.00430                0.131
+##  2 Aug          0.00443                0.136
+##  3 Dec          0.00418                0.133
+##  4 Feb          0.00427                0.134
+##  5 Jan          0.00429                0.134
+##  6 Jul          0.00432                0.134
+##  7 Jun          0.00435                0.132
+##  8 Mar          0.00421                0.131
+##  9 May          0.00436                0.132
+## 10 Nov          0.00433                0.134
+## 11 Oct          0.00430                0.133
+## 12 Sep          0.00435                0.135
+```
+
 10. (4 points) Make a plot that visualizes the chart from question #9. Make sure that the months are on the x-axis. Do a search online and figure out how to order the months Jan-Dec.
 
+```r
+surgery %>% 
+  group_by(month) %>% 
+  count(mort30, sort = T) %>% 
+  ggplot(aes(x=n, y=month))+
+  geom_boxplot(position="dodge")+
+  labs(title = "Distribution of ASA status",
+       x = "ASA Status")+
+  theme_clean()
+```
+
+![](midterm_2_files/figure-html/unnamed-chunk-22-1.png)<!-- -->
+
+
+```r
+surgery %>% 
+  group_by(month) %>% 
+  select(month, ccsmort30rate, ccscomplicationrate) %>% 
+  summarise(ccsmort30rate_ = mean(ccsmort30rate))
+```
+
+```
+## # A tibble: 12 × 2
+##    month ccsmort30rate_
+##    <chr>          <dbl>
+##  1 Apr          0.00430
+##  2 Aug          0.00443
+##  3 Dec          0.00418
+##  4 Feb          0.00427
+##  5 Jan          0.00429
+##  6 Jul          0.00432
+##  7 Jun          0.00435
+##  8 Mar          0.00421
+##  9 May          0.00436
+## 10 Nov          0.00433
+## 11 Oct          0.00430
+## 12 Sep          0.00435
+```
+
+
 Please provide the names of the students you have worked with with during the exam:
+
+Becca 
 
 Please be 100% sure your exam is saved, knitted, and pushed to your github repository. No need to submit a link on canvas, we will find your exam in your repository.

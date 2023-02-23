@@ -132,26 +132,89 @@ surgery %>%
   group_by(asa_status) %>% 
   ggplot(aes(x=bmi, group=asa_status, fill = asa_status))+
   geom_density(alpha=0.4)+
-  facet_wrap(asa_status~.)
+  facet_wrap(asa_status~.)+
+  labs(title = "Distribution of BMI by ASA status",
+       x = "BMI")+
+  theme_clean()
 ```
 
 The variable `ccsmort30rate` is a measure of the overall 30-day mortality rate associated with each type of operation. The variable `ccscomplicationrate` is a measure of the 30-day in-hospital complication rate. The variable `ahrq_ccs` lists each type of operation.  
 
 7. (4 points) What are the 5 procedures associated with highest risk of 30-day mortality AND how do they compare with the 5 procedures with highest risk of complication? (hint: no need for a plot here)
+
+Nephrectomy; partial or complete and Endoscopy and endoscopic biopsy of the urinary tract are the two types of surgery that are 
+Colorectal resection and Small bowel resection are both 
 ```{r}
 surgery %>% 
   select(ahrq_ccs, ccsmort30rate, ccscomplicationrate) %>% 
   group_by(ahrq_ccs) %>% 
-  summarise(ave_ccsmort30rate = mean(ccsmort30rate))
+  summarise(ccsmort30rate_ = mean(ccsmort30rate)) %>% 
+  arrange(desc(ccsmort30rate_)) %>% 
+  slice(1:5)
+```
+```{r}
+surgery %>% 
+  select(ahrq_ccs, ccsmort30rate, ccscomplicationrate) %>% 
+  group_by(ahrq_ccs) %>% 
+  summarise(ccscomplicationrate_ = mean(ccscomplicationrate)) %>% 
+  arrange(desc(ccscomplicationrate_)) %>% 
+  slice(1:5)
 ```
 
-
-8. (3 points) Make a plot that compares the `ccsmort30rate` for all listed `ahrq_ccs` procedures.
+### 8. (3 points) Make a plot that compares the `ccsmort30rate` for all listed `ahrq_ccs` procedures.
+```{r}
+surgery %>% 
+  select(ahrq_ccs, ccsmort30rate) %>% 
+  group_by(ahrq_ccs) %>% 
+  summarise(ccsmort30rate_ = mean(ccsmort30rate)) %>% 
+  ggplot(aes(x=ahrq_ccs, y=ccsmort30rate_))+
+  geom_col()+
+  labs(title = "Distribution of Hospital Procedures",
+       y = "30 Day Mortality Rate",
+       x = "Hospital Procedures")+
+  coord_flip()+
+  theme_clean()
+```
 
 9. (4 points) When is the best month to have surgery? Make a chart that shows the 30-day mortality and complications for the patients by month. `mort30` is the variable that shows whether or not a patient survived 30 days post-operation.
 
+December is the best month to have a surgery because there is the fewest deaths, with January being the worst with the most deaths. 
+```{r}
+surgery %>% 
+  group_by(month) %>% 
+  count(mort30, sort = T) %>% 
+  arrange(n)
+```
+```{r}
+surgery %>% 
+  group_by(month) %>% 
+  select(month, ccsmort30rate, ccscomplicationrate) %>% 
+  summarise(ccsmort30rate_ = mean(ccsmort30rate),
+            ccscomplicationrate_ = mean(ccscomplicationrate))
+```
+
 10. (4 points) Make a plot that visualizes the chart from question #9. Make sure that the months are on the x-axis. Do a search online and figure out how to order the months Jan-Dec.
+```{r}
+surgery %>% 
+  group_by(month) %>% 
+  count(mort30, sort = T) %>% 
+  ggplot(aes(x=n, y=month))+
+  geom_boxplot(position="dodge")+
+  labs(title = "Distribution of ASA status",
+       x = "ASA Status")+
+  theme_clean()
+```
+
+```{r}
+surgery %>% 
+  group_by(month) %>% 
+  select(month, ccsmort30rate, ccscomplicationrate) %>% 
+  summarise(ccsmort30rate_ = mean(ccsmort30rate))
+```
+
 
 Please provide the names of the students you have worked with with during the exam:
+
+Becca 
 
 Please be 100% sure your exam is saved, knitted, and pushed to your github repository. No need to submit a link on canvas, we will find your exam in your repository.
