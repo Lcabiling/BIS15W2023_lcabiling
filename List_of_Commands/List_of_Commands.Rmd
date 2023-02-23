@@ -677,28 +677,31 @@ group_by() must be categorical
 
 Dealing with NAs
 
-is.na() = gives true/false for every data point
-any_na() = true/false in general
+    is.na() = gives true/false for every data point
+    any_na() = true/false in general
 
 Replacing values with NA (ie NA was given numerical value of -999)
 
 In begining when uploading data into R...
-  data %>%  na_if("-999")
+  
+    data %>%  na_if("-999")
   
 counting amount of NAs in each variable
-  summarize_all(~(sum(is.na(.))))
+  
+    summarize_all(~(sum(is.na(.))))
   
 Replacing NAs with na_if() and mutate()
   ex. domesticated to NA
-  msleep %>%  
-    mutate(conservation_modified = na_if(conservation, "domesticated"))%>% 
-    count(conservation_modified, sort = T) 
+  
+    msleep %>%  
+      mutate(conservation_modified = na_if(conservation, "domesticated"))%>% 
+      count(conservation_modified, sort = T) 
             #previously there were only 29 NA's
             
 Naniar
   package build to manage NA's
   
-naniar::miss_var_summary()
+      naniar::miss_var_summary()
 
 ## Lab 8
 
@@ -721,19 +724,23 @@ Rules:
 + `values_to` - Name of the new column; it will contain the data stored in the values of gathered columns
 
 example of pivot_longer()
-  heartrate %>% 
-  pivot_longer(-patient, #patient will not pivot/move
-               names_to = "drug", #new column name 
-               values_to = "heartrate") #values are moved to 
+
+    heartrate %>% 
+    pivot_longer(-patient, #patient will not pivot/move
+                names_to = "drug", #new column name 
+                values_to = "heartrate") #values are moved to 
   
   Specify a range of columns that you want to pivot.
+  
       billboard2 <- 
         billboard %>% 
         pivot_longer(wk1:wk76, # a range of columns
                       names_to = "week",
                       values_to = "rank",
                       values_drop_na = TRUE) #this will drop the NA's
-  Specify columns that you want to stay fixed.     
+                      
+  Specify columns that you want to stay fixed.   
+  
       billboard3 <- 
         billboard %>% 
         pivot_longer(-c(artist, track, date.entered), #specific columns
@@ -742,6 +749,7 @@ example of pivot_longer()
                       values_drop_na = TRUE)
                       
   Identify columns by a prefix, remove the prefix and all NA's.
+  
       billboard %>% 
         pivot_longer(
         cols = starts_with("wk"),
@@ -752,6 +760,7 @@ example of pivot_longer()
         
   More than one variable in a column name
   `names_sep` helps pull these apart, but we still have "exp" and "rep" to deal with.  
+  
       qpcr_untidy %>% 
           pivot_longer(
             exp1_rep1:exp3_rep3,
@@ -795,6 +804,7 @@ When using `pivot_wider()` we use `names_from` to identify the variables (new co
                         values_from = "value")
                         
   With multiple variables  
+  
     edu_level %>% 
         pivot_wider(names_from = (education_level), 
                               #new column names come from the education_level column
@@ -903,9 +913,12 @@ Bar Plots:
 
   Remove/cancel scientific notation for the session 
     option 1:
+       
        options(scipen == value)
+            
             ex. options(scipen == 999)
     option 2:
+       
        scale_y_log10()
 
 Reorder x: `ggplot(aes(x=reorder(x-data, y-data), y=y-data))
@@ -1673,7 +1686,8 @@ Density Plots:
         geom_density(fill="deepskyblue4", alpha  =0.4, color = "black")+
         labs(title = "Distribution of Body Mass")
 
-  I like to see both the histogram and the density curve so I often plot them together.        Note that I assign the density plot a different color.
+  I like to see both the histogram and the density curve so I often plot them together.Note that I assign the density plot a different color.
+        
         homerange %>% 
           ggplot(aes(x=log10.mass)) +
           geom_histogram(aes(y = ..density..), fill = "deepskyblue4", alpha = 0.4, color                 = "black")+
